@@ -153,11 +153,26 @@ python manage.py init_db
 python manage.py createsuperuser
 ```
 
-#### 8. Start the development server
+#### 8. Start the development server (Uvicorn ASGI)
+```bash
+uvicorn smartqueue.asgi:application --reload --port 8000
+```
+or with Django:
 ```bash
 python manage.py runserver
 ```
 Visit **`http://127.0.0.1:8000`** in your browser.
+
+---
+
+## 🧪 Interactive API Testing (Swagger UI & OpenAPI)
+
+An interactive OpenAPI / Swagger UI interface is available for direct API testing:
+- **Interactive Swagger UI**: [`http://127.0.0.1:8000/api/docs/`](http://127.0.0.1:8000/api/docs/)
+- **ReDoc Documentation**: [`http://127.0.0.1:8000/api/redoc/`](http://127.0.0.1:8000/api/redoc/)
+- **OpenAPI Schema (JSON)**: [`http://127.0.0.1:8000/api/schema/`](http://127.0.0.1:8000/api/schema/)
+
+You can test endpoints directly from the Swagger UI using the **"Authorize"** button with your token (`Token <your_token>`) and click **"Try it out"**.
 
 ---
 
