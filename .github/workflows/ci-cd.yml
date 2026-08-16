@@ -21,7 +21,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        pip install -r backend/requirements.txt
 
     - name: Set up environment variables
       run: |
@@ -29,12 +29,12 @@ jobs:
 
     - name: Run Django System Check
       run: |
-        python manage.py check
+        python backend/manage.py check
 
     - name: Run Migrations
       run: |
-        python manage.py migrate --no-input
+        python backend/manage.py migrate --no-input
 
     - name: Verify Department Seeding
       run: |
-        python manage.py init_db
+        python backend/manage.py init_db

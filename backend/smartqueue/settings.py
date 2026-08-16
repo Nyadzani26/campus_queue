@@ -6,6 +6,7 @@ from pathlib import Path
 from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+PROJECT_ROOT = BASE_DIR.parent
 
 # ─── Security ────────────────────────────────────────────────────────────────
 SECRET_KEY = config('DJANGO_SECRET_KEY')
@@ -47,7 +48,7 @@ ROOT_URLCONF = 'smartqueue.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [PROJECT_ROOT / 'frontend' / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -90,7 +91,7 @@ USE_TZ = True
 # ─── Static Files ─────────────────────────────────────────────────────────────
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_DIRS = [BASE_DIR / 'static'] if (BASE_DIR / 'static').exists() else []
+STATICFILES_DIRS = [PROJECT_ROOT / 'frontend' / 'static'] if (PROJECT_ROOT / 'frontend' / 'static').exists() else []
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # ─── Django REST Framework ────────────────────────────────────────────────────

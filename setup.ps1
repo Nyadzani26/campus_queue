@@ -27,7 +27,7 @@ if (-Not (Test-Path $VenvPath)) {
 
 # ─── Step 2: Install dependencies ────────────────────────────────────────────
 Write-Host "  [2/5] Installing dependencies ..." -ForegroundColor Yellow
-& $PipExe install -r requirements.txt --quiet
+& $PipExe install -r backend\requirements.txt --quiet
 if ($LASTEXITCODE -ne 0) { Write-Host "  ERROR: pip install failed." -ForegroundColor Red; exit 1 }
 Write-Host "  [2/5] Dependencies installed." -ForegroundColor Green
 
@@ -50,13 +50,13 @@ ALLOWED_HOSTS=localhost,127.0.0.1
 
 # ─── Step 4: Run migrations ───────────────────────────────────────────────────
 Write-Host "  [4/5] Running database migrations ..." -ForegroundColor Yellow
-& $PythonExe manage.py migrate
+& $PythonExe backend\manage.py migrate
 if ($LASTEXITCODE -ne 0) { Write-Host "  ERROR: migrate failed." -ForegroundColor Red; exit 1 }
 Write-Host "  [4/5] Migrations applied." -ForegroundColor Green
 
 # ─── Step 5: Seed departments ─────────────────────────────────────────────────
 Write-Host "  [5/5] Setting up departments ..." -ForegroundColor Yellow
-& $PythonExe manage.py init_db
+& $PythonExe backend\manage.py init_db
 Write-Host "  [5/5] Departments ready." -ForegroundColor Green
 
 # ─── Done ────────────────────────────────────────────────────────────────────
@@ -65,11 +65,12 @@ Write-Host "  Setup complete!" -ForegroundColor Green
 Write-Host ""
 Write-Host "  Next steps:" -ForegroundColor Cyan
 Write-Host "    1. Create your admin account:"
-Write-Host "       $PythonExe manage.py createsuperuser" -ForegroundColor White
+Write-Host "       $PythonExe backend\manage.py createsuperuser" -ForegroundColor White
 Write-Host ""
-Write-Host "    2. Start the development server:"
-Write-Host "       $PythonExe manage.py runserver" -ForegroundColor White
+Write-Host "    2. Start the development server (Uvicorn ASGI):"
+Write-Host "       $VenvPath\Scripts\uvicorn --app-dir backend smartqueue.asgi:application --reload --port 8000" -ForegroundColor White
 Write-Host ""
 Write-Host "    3. Open your browser:"
 Write-Host "       http://localhost:8000" -ForegroundColor White
+Write-Host "       http://localhost:8000/api/docs/ (Interactive Swagger API Docs)" -ForegroundColor White
 Write-Host ""

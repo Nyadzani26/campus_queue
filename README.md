@@ -14,9 +14,11 @@ A web-based queue management system developed for **Sol Plaatje University (SPU)
   - [Prerequisites](#prerequisites)
   - [Installation & Setup](#installation--setup)
   - [One-Command Setup (Windows)](#one-command-setup-windows)
+- [Running the Server (Uvicorn ASGI)](#running-the-server-uvicorn-asgi)
+- [Interactive API Testing (Swagger UI)](#interactive-api-testing-swagger-ui)
 - [User Roles & Workflows](#user-roles--workflows)
 - [API Overview](#api-overview)
-- [Contributing & Development Notes](#contributing--development-notes)
+- [License](#license)
 
 ---
 
@@ -40,13 +42,15 @@ SmartQueue organizes campus department traffic through synchronized digital queu
 - **Daily Queue Cycles**: Automatic daily queue lifecycle management per department with race-safe atomic ticket numbering.
 - **Administrative Reporting**: Per-department metrics including tickets issued, completed, cancelled, no-shows, and average wait/service durations.
 - **Secure Authentication**: Django REST Framework token-based authentication with strict role-based access control (Student, Staff, Admin).
+- **Interactive OpenAPI Documentation**: Built-in Swagger UI and ReDoc for live API testing and documentation.
 - **Responsive SPU-Themed UI**: Built using semantic HTML5, Vanilla CSS design tokens reflecting SPU's institutional identity, and Vanilla JavaScript with non-blocking feedback modals.
 
 ---
 
 ## Architecture & Tech Stack
 
-- **Backend Framework**: Django 5.2 & Django REST Framework (DRF)
+- **Backend**: Django 5.2, Django REST Framework (DRF), `drf-spectacular`
+- **ASGI Server**: Uvicorn
 - **Database**: SQLite (local development)
 - **Authentication**: DRF Token Authentication (`rest_framework.authtoken`)
 - **Frontend**: Vanilla HTML5, CSS3, JavaScript (Single Page Application architecture)
@@ -59,33 +63,43 @@ SmartQueue organizes campus department traffic through synchronized digital queu
 
 ```
 service-driven-system-development/
-├── accounts/                  # User model, authentication views, serializers, admin
-│   ├── models.py              # Custom User model (roles: Student, Staff, Admin)
-│   ├── serializers.py         # Registration, Login, and Profile serializers
-│   ├── views.py               # Auth endpoints (register, login, logout, profile)
-│   └── urls.py
-├── queues/                    # Core queue engine and operational logic
-│   ├── models.py              # Department, Queue, and Ticket models
-│   ├── serializers.py         # Queue and Ticket serializers with computed stats
-│   ├── views.py               # Counter operations, student join/status, reports
-│   ├── permissions.py         # Role-based permission classes
-│   └── management/commands/   # init_db command to seed university departments
-├── smartqueue/                # Project configuration root
-│   ├── settings.py            # Application settings and DRF configuration
-│   ├── urls.py                # Root routing
-│   ├── wsgi.py
-│   └── asgi.py
-├── static/                    # Frontend styling and scripts
-│   ├── css/style.css          # SPU design system & responsive layout
-│   └── js/
-│       ├── api.js             # API client & token storage wrapper
-│       └── app.js             # SPA routing, dashboard rendering, polling
-├── templates/
-│   └── index.html             # Single-page interface template
-├── manage.py
-├── requirements.txt
-├── setup.ps1                  # PowerShell automated setup script
-└── .env.example
+├── backend/                   # Backend Django application & APIs
+│   ├── accounts/              # User authentication, roles, profile management
+│   │   ├── models.py          # Custom User model (Student, Staff, Admin)
+│   │   ├── serializers.py     # Auth & registration serializers
+│   │   ├── views.py           # Auth API endpoints
+│   │   ├── admin.py           # Django admin registration
+│   │   └── urls.py
+│   ├── queues/                # Core queue engine & departmental operations
+│   │   ├── models.py          # Department, Queue, and Ticket models
+│   │   ├── serializers.py     # Queue and Ticket serializers with computed stats
+│   │   ├── views.py           # Counter operations, student join/status, reports
+│   │   ├── permissions.py     # Role-based permission classes
+│   │   ├── admin.py           # Queue models Django admin registration
+│   │   └── management/        # Management commands (init_db seeds departments)
+│   ├── smartqueue/            # Project configuration root
+│   │   ├── settings.py        # Django settings, REST framework, and OpenAPI config
+│   │   ├── urls.py            # API routing & Swagger endpoints
+│   │   ├── asgi.py            # ASGI application entrypoint (for Uvicorn)
+│   │   └── wsgi.py
+│   ├── manage.py              # Django management script
+│   ├── requirements.txt       # Python dependencies
+│   └── pytest.ini
+│
+├── frontend/                  # Frontend user interface (SPA)
+│   ├── static/
+│   │   ├── css/
+│   │   │   └── style.css      # SPU design system, tokens, and responsive layout
+│   │   └── js/
+│   │       ├── api.js         # API client & token storage wrapper
+│   │       └── app.js         # SPA routing, dynamic rendering, queue polling
+│   └── templates/
+│       └── index.html         # Main single-page web interface
+│
+├── setup.ps1                  # PowerShell one-command setup script (Windows)
+├── .env.example               # Example environment configuration
+├── .gitignore
+└── README.md
 ```
 
 ---
@@ -123,7 +137,7 @@ source venv/bin/activate
 
 #### 3. Install dependencies
 ```bash
-pip install -r requirements.txt
+pip install -r backend/requirements.txt
 ```
 
 #### 4. Configure environment variables
@@ -140,55 +154,64 @@ ALLOWED_HOSTS=localhost,127.0.0.1
 
 #### 5. Run migrations
 ```bash
-python manage.py migrate
+python backend/manage.py migrate
 ```
 
 #### 6. Initialize campus departments
 ```bash
-python manage.py init_db
+python backend/manage.py init_db
 ```
 
 #### 7. Create an administrator account
 ```bash
-python manage.py createsuperuser
+python backend/manage.py createsuperuser
 ```
-
-#### 8. Start the development server (Uvicorn ASGI)
-```bash
-uvicorn smartqueue.asgi:application --reload --port 8000
-```
-or with Django:
-```bash
-python manage.py runserver
-```
-Visit **`http://127.0.0.1:8000`** in your browser.
-
----
-
-## 🧪 Interactive API Testing (Swagger UI & OpenAPI)
-
-An interactive OpenAPI / Swagger UI interface is available for direct API testing:
-- **Interactive Swagger UI**: [`http://127.0.0.1:8000/api/docs/`](http://127.0.0.1:8000/api/docs/)
-- **ReDoc Documentation**: [`http://127.0.0.1:8000/api/redoc/`](http://127.0.0.1:8000/api/redoc/)
-- **OpenAPI Schema (JSON)**: [`http://127.0.0.1:8000/api/schema/`](http://127.0.0.1:8000/api/schema/)
-
-You can test endpoints directly from the Swagger UI using the **"Authorize"** button with your token (`Token <your_token>`) and click **"Try it out"**.
 
 ---
 
 ### One-Command Setup (Windows)
 
-A PowerShell setup script is included to automate environment setup, migration, and department seeding:
+A PowerShell setup script is included to automate environment setup, dependency installation, migration, and department initialization:
 ```powershell
 .\setup.ps1
 ```
 
 ---
 
+## Running the Server (Uvicorn ASGI)
+
+Start the development server using **Uvicorn**:
+
+```bash
+uvicorn --app-dir backend smartqueue.asgi:application --reload --port 8000
+```
+
+*(Alternatively, run with Django's built-in server: `python backend/manage.py runserver`)*
+
+Open your browser at **`http://127.0.0.1:8000`**.
+
+---
+
+## 🧪 Interactive API Testing (Swagger UI)
+
+An interactive OpenAPI / Swagger UI interface is available for direct API testing:
+
+- **Interactive Swagger UI**: [`http://127.0.0.1:8000/api/docs/`](http://127.0.0.1:8000/api/docs/)
+- **ReDoc Documentation**: [`http://127.0.0.1:8000/api/redoc/`](http://127.0.0.1:8000/api/redoc/)
+- **OpenAPI Schema (JSON)**: [`http://127.0.0.1:8000/api/schema/`](http://127.0.0.1:8000/api/schema/)
+
+### How to test with Swagger:
+1. Open [`http://127.0.0.1:8000/api/docs/`](http://127.0.0.1:8000/api/docs/) in your browser.
+2. Click the **"Authorize"** button at the top right.
+3. In the `tokenAuth` field, enter: `Token <your_token>` (obtain a token via `/api/auth/login/`).
+4. Select any endpoint, click **"Try it out"**, fill in parameters, and click **"Execute"**.
+
+---
+
 ## User Roles & Workflows
 
 ### 1. Student
-- **Registration**: Students create their account using the registration tab with their first name, last name, email, student number, username, and password.
+- **Registration**: Students create their account using the registration form with their first name, last name, email, student number, username, and password.
 - **Queueing**: Once logged in, students see all active campus departments, their live queue count, and average wait times.
 - **Tickets**: Clicking "Join Queue" issues a unique department ticket (e.g. `ICT-001`). The active ticket banner displays live position updates and estimated wait time.
 
