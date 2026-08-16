@@ -1,0 +1,18 @@
+# SPU SmartQueue — Local Development Dependencies
+# Install: pip install -r requirements.txt
+
+# Core Framework
+Django==5.2
+djangorestframework==3.15.0
+
+# CORS Headers
+django-cors-headers==4.4.0
+
+# Environment / Secrets Management
+python-decouple==3.8
+
+# Static File Serving (local dev without a web server)
+whitenoise==6.7.0
+
+# Utilities
+python-dateutil==2.8.2

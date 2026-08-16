@@ -1,0 +1,40 @@
+name: Django CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Set up environment variables
+      run: |
+        cp .env.example .env
+
+    - name: Run Django System Check
+      run: |
+        python manage.py check
+
+    - name: Run Migrations
+      run: |
+        python manage.py migrate --no-input
+
+    - name: Verify Department Seeding
+      run: |
+        python manage.py init_db
