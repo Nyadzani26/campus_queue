@@ -25,6 +25,8 @@ class UserSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "role",
+            'is_staff',        # ← ADD THIS
+            'is_superuser',
             "role_display",
             "student_number",
             "phone",
