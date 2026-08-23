@@ -1,14 +1,13 @@
 // frontend/src/pages/Dashboard.jsx
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Link } from 'react-router-dom';
 import { 
   getDepartments, 
   getMyActiveTicket, 
   joinQueue, 
   cancelTicket 
 } from '../api';
+import Modal from '../components/Modal';
 
 const Dashboard = () => {
   const { user, logoutUser } = useAuth();
@@ -20,6 +19,9 @@ const Dashboard = () => {
   const [myTicket, setMyTicket] = useState(null);
   const [error, setError] = useState('');
   const [joinLoading, setJoinLoading] = useState(false);
+  const [cancelLoading, setCancelLoading] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [modalLoading, setModalLoading] = useState(false);
 
   useEffect(() => {
     fetchDepartments();
@@ -107,7 +109,8 @@ const Dashboard = () => {
         setShowJoinModal(false);
         setDescription('');
         await fetchDepartments();
-        alert('✅ Successfully joined the queue!');
+        // Show a simple toast or just rely on UI update
+        console.log('✅ Successfully joined the queue!');
       } else {
         const errorData = await response.json().catch(() => ({}));
         console.error('Join queue error:', errorData);
@@ -122,10 +125,7 @@ const Dashboard = () => {
   };
 
   const handleCancelTicket = async (ticketId) => {
-    if (!window.confirm('Cancel your ticket? You will lose your position in the queue. This cannot be undone.')) {
-      return;
-    }
-
+    setModalLoading(true);
     try {
       console.log('Cancelling ticket:', ticketId);
       const response = await cancelTicket(ticketId);
@@ -134,7 +134,7 @@ const Dashboard = () => {
       if (response.ok) {
         setMyTicket(null);
         await fetchDepartments();
-        alert('✅ Ticket cancelled successfully');
+        console.log('✅ Ticket cancelled successfully');
       } else {
         const errorData = await response.json().catch(() => ({}));
         console.error('Cancel ticket error:', errorData);
@@ -143,12 +143,39 @@ const Dashboard = () => {
     } catch (error) {
       console.error('Error cancelling ticket:', error);
       alert('❌ Network error: Could not connect to the server');
+    } finally {
+      setModalLoading(false);
+      setShowCancelModal(false);
     }
   };
 
   if (loading) {
     return <div style={styles.loading}>Loading departments...</div>;
   }
+
+  const getTicketDepartmentName = () => {
+    if (!myTicket) return 'Department';
+    if (myTicket.department_name) return myTicket.department_name;
+    if (myTicket.department && typeof myTicket.department === 'object' && myTicket.department.name) {
+      return myTicket.department.name;
+    }
+    if (myTicket.department && typeof myTicket.department === 'string') return myTicket.department;
+    if (myTicket.department && typeof myTicket.department === 'number') {
+      const found = departments.find(d => d.id === myTicket.department);
+      if (found) return found.name;
+    }
+    return 'Department';
+  };
+
+  const getEstWait = () => {
+    if (!myTicket) return 0;
+    return myTicket.est_wait || myTicket.estimated_wait || 0;
+  };
+
+  const getPosition = () => {
+    if (!myTicket) return 0;
+    return myTicket.position || myTicket.queue_position || 0;
+  };
 
   return (
     <div style={styles.container}>
@@ -157,14 +184,14 @@ const Dashboard = () => {
           <h1 style={styles.logo}>SQ</h1>
           <h2 style={styles.title}>SmartQueue</h2>
         </div>
-       <div style={styles.headerRight}>
-  <span style={styles.userInfo}>
-    {user?.username || 'User'} • {user?.role || 'Student'}
-  </span>
-  <button onClick={logoutUser} style={styles.signOutBtn}>
-    Sign out
-  </button>
-</div>
+        <div style={styles.headerRight}>
+          <span style={styles.userInfo}>
+            {user?.username || 'User'} • {user?.role || 'Student'}
+          </span>
+          <button onClick={logoutUser} style={styles.signOutBtn}>
+            Sign out
+          </button>
+        </div>
       </header>
 
       {error && <div style={styles.errorBanner}>{error}</div>}
@@ -174,24 +201,23 @@ const Dashboard = () => {
           <div style={styles.ticketCard}>
             <h3 style={styles.ticketTitle}>YOUR TICKET</h3>
             <p style={styles.ticketNumber}>{myTicket.ticket_number || 'Ticket'}</p>
-            <p style={styles.ticketDepartment}>
-              {myTicket.department_name || myTicket.department?.name || 'Department'}
-            </p>
+            <p style={styles.ticketDepartment}>📍 {getTicketDepartmentName()}</p>
             <div style={styles.ticketDetails}>
               <div style={styles.ticketDetail}>
                 <span style={styles.ticketLabel}>POSITION</span>
-                <span style={styles.ticketValue}>#{myTicket.position || myTicket.queue_position || 0}</span>
+                <span style={styles.ticketValue}>#{getPosition()}</span>
               </div>
               <div style={styles.ticketDetail}>
                 <span style={styles.ticketLabel}>EST. WAIT</span>
-                <span style={styles.ticketValue}>{myTicket.est_wait || myTicket.estimated_wait || 0} min</span>
+                <span style={styles.ticketValue}>{getEstWait()} min</span>
               </div>
             </div>
             <button 
-              onClick={() => handleCancelTicket(myTicket.id)} 
+              onClick={() => setShowCancelModal(true)}
               style={styles.cancelBtn}
+              disabled={cancelLoading}
             >
-              Cancel ticket
+              {cancelLoading ? 'Cancelling...' : 'Cancel ticket'}
             </button>
           </div>
         </div>
@@ -208,7 +234,6 @@ const Dashboard = () => {
             {departments.map((dept) => (
               <div key={dept.id} style={styles.departmentCard}>
                 <div style={styles.departmentHeader}>
-                  {/* CHANGE HERE: display full department name instead of code */}
                   <span style={styles.departmentCode}>{dept.name}</span>
                   <span style={dept.is_open ? styles.openBadge : styles.closedBadge}>
                     {dept.is_open ? 'OPEN' : 'CLOSED'}
@@ -287,6 +312,19 @@ const Dashboard = () => {
           </div>
         </div>
       )}
+
+      {/* Cancel Ticket Modal */}
+      <Modal
+        isOpen={showCancelModal}
+        onClose={() => setShowCancelModal(false)}
+        onConfirm={() => handleCancelTicket(myTicket?.id)}
+        title="Cancel Ticket"
+        message="Cancel your ticket? You will lose your position in the queue. This cannot be undone."
+        confirmText="Cancel Ticket"
+        confirmColor="#e74c3c"
+        loading={modalLoading}
+        type="confirm"
+      />
     </div>
   );
 };
@@ -395,8 +433,10 @@ const styles = {
     margin: '5px 0',
   },
   ticketDepartment: {
-    color: '#555',
+    color: '#333',
     marginBottom: '15px',
+    fontWeight: 'bold',
+    fontSize: '16px',
   },
   ticketDetails: {
     display: 'flex',
@@ -603,67 +643,6 @@ const styles = {
     borderRadius: '4px',
     cursor: 'pointer',
   },
-  staffLink: {
-  padding: '8px 16px',
-  backgroundColor: '#1a73e8',
-  color: 'white',
-  borderRadius: '4px',
-  textDecoration: 'none',
-  fontSize: '14px',
-},
 };
 
 export default Dashboard;
-
-
-// ==================== STAFF ENDPOINTS ====================
-
-/**
- * GET /api/staff/queue/ - Staff view of the current queue
- * Returns: department info, waiting list, now serving
- */
-export const getStaffQueue = () => {
-  return apiRequest('/staff/queue/', 'GET');
-};
-
-/**
- * POST /api/staff/call-next/ - Call the next ticket in queue
- */
-export const callNextTicket = () => {
-  return apiRequest('/staff/call-next/', 'POST');
-};
-
-/**
- * POST /api/staff/tickets/{id}/start/ - Start serving a ticket
- */
-export const startServingTicket = (ticketId) => {
-  return apiRequest(`/staff/tickets/${ticketId}/start/`, 'POST');
-};
-
-/**
- * POST /api/staff/tickets/{id}/serve/ - Mark a ticket as served
- */
-export const serveTicket = (ticketId) => {
-  return apiRequest(`/staff/tickets/${ticketId}/serve/`, 'POST');
-};
-
-/**
- * POST /api/staff/tickets/{id}/no-show/ - Mark a ticket as no-show
- */
-export const noShowTicket = (ticketId) => {
-  return apiRequest(`/staff/tickets/${ticketId}/no-show/`, 'POST');
-};
-
-/**
- * GET /api/staff/queue/status/ - Get the current queue status
- */
-export const getQueueStatus = () => {
-  return apiRequest('/staff/queue/status/', 'GET');
-};
-
-/**
- * PATCH /api/departments/{id}/ - Toggle department status (Open/Closed)
- */
-export const toggleDepartmentStatus = (departmentId, isOpen) => {
-  return apiRequest(`/departments/${departmentId}/`, 'PATCH', { is_open: isOpen });
-};

@@ -185,3 +185,4 @@ export const toggleDepartmentStatus = (departmentId, isOpen) => {
 export const getReportSummary = () => {
   return apiRequest('/reports/summary/', 'GET');
 };
+

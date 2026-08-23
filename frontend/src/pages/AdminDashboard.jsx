@@ -1,14 +1,15 @@
 // frontend/src/pages/AdminDashboard.jsx
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { getDepartments, getQueueStatus } from '../api';
-import { Link } from 'react-router-dom';
+import { getDepartments, getReportSummary } from '../api';
 
 const AdminDashboard = () => {
   const { user, logoutUser } = useAuth();
   const [departments, setDepartments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [lastUpdated, setLastUpdated] = useState(new Date());
+  const [toast, setToast] = useState(null);
   const [summary, setSummary] = useState({
     total_issued: 0,
     total_served: 0,
@@ -19,42 +20,83 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     fetchAllData();
+    const interval = setInterval(() => {
+      fetchAllData();
+    }, 15000);
+    return () => clearInterval(interval);
   }, []);
 
   const fetchAllData = async () => {
     try {
       setLoading(true);
+      console.log('Admin: Fetching data...');
       
-      // Fetch all departments
+      let response = await getReportSummary();
+      console.log('Admin: Report summary status:', response.status);
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Admin: Report data:', data);
+        
+        if (data.departments && Array.isArray(data.departments)) {
+          setDepartments(data.departments);
+          if (data.totals) {
+            setSummary({
+              total_issued: data.totals.tickets_issued || 0,
+              total_served: data.totals.tickets_served || 0,
+              total_cancelled: data.totals.tickets_cancelled || 0,
+              total_no_shows: data.totals.no_shows || 0,
+              total_waiting: data.totals.still_waiting || 0,
+            });
+          } else {
+            calculateSummary(data.departments);
+          }
+          setLastUpdated(new Date());
+          setError('');
+          setToast({ message: '✅ Data refreshed successfully!', type: 'success' });
+          setTimeout(() => setToast(null), 3000);
+          setLoading(false);
+          return;
+        }
+      }
+      
+      // Fallback
+      console.log('Admin: Falling back to departments...');
       const deptResponse = await getDepartments();
       if (deptResponse.ok) {
         const data = await deptResponse.json();
         const depts = Array.isArray(data) ? data : data.results || [];
         setDepartments(depts);
-        
-        // Calculate summary stats
-        const total_issued = depts.reduce((sum, d) => sum + (d.issued_count || 0), 0);
-        const total_served = depts.reduce((sum, d) => sum + (d.served_count || 0), 0);
-        const total_cancelled = depts.reduce((sum, d) => sum + (d.cancelled_count || 0), 0);
-        const total_no_shows = depts.reduce((sum, d) => sum + (d.no_show_count || 0), 0);
-        const total_waiting = depts.reduce((sum, d) => sum + (d.waiting_count || 0), 0);
-        
-        setSummary({
-          total_issued,
-          total_served,
-          total_cancelled,
-          total_no_shows,
-          total_waiting,
-        });
+        calculateSummary(depts);
+        setLastUpdated(new Date());
+        setError('Showing department data (queue stats may be limited)');
+        setToast({ message: '⚠️ Using department list only', type: 'warning' });
+        setTimeout(() => setToast(null), 3000);
       } else {
-        setError('Failed to fetch departments');
+        setError('Could not load data. Please check your connection.');
       }
     } catch (error) {
-      console.error('Error fetching data:', error);
-      setError('Network error: Could not connect to the server');
+      console.error('Admin: Error:', error);
+      setError('Network error. Please try again.');
     } finally {
       setLoading(false);
     }
+  };
+
+  const calculateSummary = (data) => {
+    const total_issued = data.reduce((sum, d) => sum + (d.tickets_issued || d.issued_count || 0), 0);
+    const total_served = data.reduce((sum, d) => sum + (d.tickets_served || d.served_count || 0), 0);
+    const total_cancelled = data.reduce((sum, d) => sum + (d.tickets_cancelled || d.cancelled_count || 0), 0);
+    const total_no_shows = data.reduce((sum, d) => sum + (d.no_shows || d.no_show_count || 0), 0);
+    const total_waiting = data.reduce((sum, d) => sum + (d.still_waiting || d.waiting_count || 0), 0);
+    
+    setSummary({
+      total_issued,
+      total_served,
+      total_cancelled,
+      total_no_shows,
+      total_waiting,
+    });
   };
 
   const getTodayDate = () => {
@@ -73,7 +115,6 @@ const AdminDashboard = () => {
 
   return (
     <div style={styles.container}>
-      {/* Header */}
       <header style={styles.header}>
         <div style={styles.headerLeft}>
           <h1 style={styles.logo}>SQ</h1>
@@ -84,26 +125,22 @@ const AdminDashboard = () => {
           <span style={styles.userInfo}>
             {user?.username || 'Admin'} • Superuser
           </span>
-          <Link to="/staff-dashboard" style={styles.staffLink}>
-            Staff View
-          </Link>
           <button onClick={logoutUser} style={styles.signOutBtn}>
             Sign out
           </button>
         </div>
       </header>
 
-      {/* Error Message */}
       {error && <div style={styles.errorBanner}>{error}</div>}
 
-      {/* Welcome */}
       <div style={styles.welcomeSection}>
-        <h1 style={styles.welcomeTitle}>Daily Report</h1>
+        <h1 style={styles.welcomeTitle}>📊 Daily Report</h1>
         <p style={styles.welcomeSubtitle}>Queue performance across all departments</p>
         <p style={styles.date}>{getTodayDate()}</p>
+        <p style={styles.lastUpdated}>🔄 Last updated: {lastUpdated.toLocaleTimeString()}</p>
+        <p style={styles.totalTickets}>🎫 Total tickets today: {summary.total_issued}</p>
       </div>
 
-      {/* Summary Stats Cards */}
       <div style={styles.statsGrid}>
         <div style={styles.statCard}>
           <span style={styles.statValue}>{summary.total_issued}</span>
@@ -111,57 +148,64 @@ const AdminDashboard = () => {
         </div>
         <div style={styles.statCard}>
           <span style={styles.statValue}>{summary.total_served}</span>
-          <span style={styles.statLabel}>TOTAL SERVED</span>
+          <span style={styles.statLabel}>✅ SERVED</span>
         </div>
         <div style={styles.statCard}>
           <span style={styles.statValue}>{summary.total_cancelled}</span>
-          <span style={styles.statLabel}>CANCELLED</span>
+          <span style={styles.statLabel}>❌ CANCELLED</span>
         </div>
         <div style={styles.statCard}>
           <span style={styles.statValue}>{summary.total_no_shows}</span>
-          <span style={styles.statLabel}>NO SHOWS</span>
+          <span style={styles.statLabel}>⏰ MISSED</span>
         </div>
         <div style={styles.statCard}>
           <span style={styles.statValue}>{summary.total_waiting}</span>
-          <span style={styles.statLabel}>WAITING</span>
+          <span style={styles.statLabel}>⏳ WAITING</span>
         </div>
       </div>
 
-      {/* Departments Table */}
       <div style={styles.tableSection}>
         <table style={styles.table}>
           <thead>
             <tr>
               <th style={styles.th}>DEPARTMENT</th>
-              <th style={styles.th}>ISSUED</th>
-              <th style={styles.th}>SERVED</th>
-              <th style={styles.th}>CANCELLED</th>
-              <th style={styles.th}>NO SHOWS</th>
-              <th style={styles.th}>WAITING</th>
+              <th style={styles.th}>📋 ISSUED</th>
+              <th style={styles.th}>✅ SERVED</th>
+              <th style={styles.th}>❌ CANCELLED</th>
+              <th style={styles.th}>⏰ MISSED</th>
+              <th style={styles.th}>⏳ WAITING</th>
               <th style={styles.th}>AVG SERVICE</th>
               <th style={styles.th}>AVG WAIT</th>
             </tr>
           </thead>
           <tbody>
-            {departments.map((dept) => (
-              <tr key={dept.id}>
-                <td style={styles.td}>
-                  <strong>{dept.name}</strong>
-                  <span style={styles.deptCode}> {dept.code}</span>
+            {departments.length === 0 ? (
+              <tr>
+                <td colSpan="8" style={{ textAlign: 'center', padding: '30px', color: '#888' }}>
+                  No data available. Create some tickets to see data here.
                 </td>
-                <td style={styles.td}>{dept.issued_count || 0}</td>
-                <td style={styles.td}>{dept.served_count || 0}</td>
-                <td style={styles.td}>{dept.cancelled_count || 0}</td>
-                <td style={styles.td}>{dept.no_show_count || 0}</td>
-                <td style={styles.td}>{dept.waiting_count || 0}</td>
-                <td style={styles.td}>{dept.avg_service || '—'}</td>
-                <td style={styles.td}>{dept.avg_wait ? `${dept.avg_wait} min` : '—'}</td>
               </tr>
-            ))}
+            ) : (
+              departments.map((dept, index) => (
+                <tr key={index}>
+                  <td style={styles.td}>
+                    <strong>{dept.department_name || dept.name || 'Unknown'}</strong>
+                    <span style={styles.deptCode}> {dept.department_code || dept.code || ''}</span>
+                  </td>
+                  <td style={styles.td}>{dept.tickets_issued || dept.issued_count || 0}</td>
+                  <td style={styles.td}>{dept.tickets_served || dept.served_count || 0}</td>
+                  <td style={styles.td}>{dept.tickets_cancelled || dept.cancelled_count || 0}</td>
+                  <td style={styles.td}>{dept.no_shows || dept.no_show_count || 0}</td>
+                  <td style={styles.td}>{dept.still_waiting || dept.waiting_count || 0}</td>
+                  <td style={styles.td}>{dept.avg_service_minutes || dept.avg_service || '—'}</td>
+                  <td style={styles.td}>{dept.avg_wait_minutes || dept.avg_wait || '—'}</td>
+                </tr>
+              ))
+            )}
           </tbody>
           <tfoot>
             <tr style={styles.totalsRow}>
-              <td style={styles.td}><strong>Totals</strong></td>
+              <td style={styles.td}><strong>📊 Totals</strong></td>
               <td style={styles.td}><strong>{summary.total_issued}</strong></td>
               <td style={styles.td}><strong>{summary.total_served}</strong></td>
               <td style={styles.td}><strong>{summary.total_cancelled}</strong></td>
@@ -174,12 +218,30 @@ const AdminDashboard = () => {
         </table>
       </div>
 
-      {/* Refresh Button */}
       <div style={styles.refreshSection}>
         <button onClick={fetchAllData} style={styles.refreshBtn}>
-          Refresh
+          🔄 Refresh
         </button>
       </div>
+
+      {/* Toast Notification */}
+      {toast && (
+        <div style={{
+          position: 'fixed',
+          bottom: '20px',
+          right: '20px',
+          padding: '12px 24px',
+          backgroundColor: toast.type === 'success' ? '#d4edda' : '#fff3cd',
+          color: toast.type === 'success' ? '#155724' : '#856404',
+          borderRadius: '8px',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+          zIndex: 999,
+          fontSize: '14px',
+          fontWeight: '500',
+        }}>
+          {toast.message}
+        </div>
+      )}
     </div>
   );
 };
@@ -250,14 +312,6 @@ const styles = {
     fontSize: '14px',
     color: '#555',
   },
-  staffLink: {
-    padding: '8px 16px',
-    backgroundColor: '#1a73e8',
-    color: 'white',
-    borderRadius: '4px',
-    textDecoration: 'none',
-    fontSize: '14px',
-  },
   signOutBtn: {
     padding: '8px 16px',
     backgroundColor: '#e74c3c',
@@ -286,6 +340,17 @@ const styles = {
     color: '#888',
     fontSize: '14px',
     margin: '5px 0 0 0',
+  },
+  lastUpdated: {
+    color: '#999',
+    fontSize: '12px',
+    margin: '5px 0 0 0',
+  },
+  totalTickets: {
+    color: '#1a73e8',
+    fontSize: '14px',
+    margin: '5px 0 0 0',
+    fontWeight: 'bold',
   },
   statsGrid: {
     display: 'grid',

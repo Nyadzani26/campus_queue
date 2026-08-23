@@ -10,6 +10,7 @@ from django.conf import settings
 from django.db import models, transaction
 from django.utils import timezone
 
+from django.conf import settings
 
 class Department(models.Model):
     """An SPU service department, e.g. ICT Helpdesk, Printing Room, Finance."""

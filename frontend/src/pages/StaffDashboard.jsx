@@ -6,8 +6,8 @@ import {
   callNextTicket, 
   serveTicket, 
   noShowTicket,
-  toggleDepartmentStatus,
 } from '../api';
+import Modal from '../components/Modal';
 
 const StaffDashboard = () => {
   const { user, logoutUser } = useAuth();
@@ -18,6 +18,9 @@ const StaffDashboard = () => {
   const [error, setError] = useState('');
   const [actionLoading, setActionLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  const [showServeModal, setShowServeModal] = useState(false);
+  const [showMissedModal, setShowMissedModal] = useState(false);
+  const [modalLoading, setModalLoading] = useState(false);
 
   useEffect(() => {
     fetchStaffQueue();
@@ -27,7 +30,6 @@ const StaffDashboard = () => {
     try {
       setLoading(true);
       console.log('Fetching staff queue...');
-      console.log('Current user:', user);
       
       const response = await getStaffQueue();
       console.log('Staff queue response status:', response.status);
@@ -51,7 +53,6 @@ const StaffDashboard = () => {
         setError('You do not have permission to view this page. No department assigned.');
       } else {
         const errorData = await response.json().catch(() => ({}));
-        console.error('Error response:', errorData);
         setError(errorData.detail || errorData.error || 'Failed to load queue data');
       }
     } catch (error) {
@@ -85,12 +86,7 @@ const StaffDashboard = () => {
   };
 
   const handleServeTicket = async (ticketId) => {
-    if (!ticketId) return;
-    if (!window.confirm('Mark this ticket as served?')) return;
-
-    setActionLoading(true);
-    setSuccessMessage('');
-    setError('');
+    setModalLoading(true);
     try {
       const response = await serveTicket(ticketId);
       if (response.ok) {
@@ -104,55 +100,28 @@ const StaffDashboard = () => {
     } catch (error) {
       setError('Network error: Could not connect to the server');
     } finally {
-      setActionLoading(false);
+      setModalLoading(false);
+      setShowServeModal(false);
     }
   };
 
   const handleNoShowTicket = async (ticketId) => {
-    if (!ticketId) return;
-    if (!window.confirm('Mark this ticket as no-show?')) return;
-
-    setActionLoading(true);
-    setSuccessMessage('');
-    setError('');
+    setModalLoading(true);
     try {
       const response = await noShowTicket(ticketId);
       if (response.ok) {
-        setSuccessMessage('⏰ Ticket marked as no-show');
+        setSuccessMessage('⏰ Ticket marked as missed');
         setNowServing(null);
         await fetchStaffQueue();
       } else {
         const errorData = await response.json().catch(() => ({}));
-        setError(errorData.detail || errorData.error || 'Failed to mark as no-show');
+        setError(errorData.detail || errorData.error || 'Failed to mark as missed');
       }
     } catch (error) {
       setError('Network error: Could not connect to the server');
     } finally {
-      setActionLoading(false);
-    }
-  };
-
-  const handleToggleStatus = async () => {
-    if (!department) return;
-    
-    setActionLoading(true);
-    setSuccessMessage('');
-    setError('');
-    try {
-      const newStatus = !department.is_open;
-      const response = await toggleDepartmentStatus(department.id, newStatus);
-      if (response.ok) {
-        const data = await response.json();
-        setDepartment({ ...department, is_open: data.is_open });
-        setSuccessMessage(`🔄 Department is now ${data.is_open ? 'OPEN' : 'CLOSED'}`);
-      } else {
-        const errorData = await response.json().catch(() => ({}));
-        setError(errorData.detail || errorData.error || 'Failed to toggle status');
-      }
-    } catch (error) {
-      setError('Network error: Could not connect to the server');
-    } finally {
-      setActionLoading(false);
+      setModalLoading(false);
+      setShowMissedModal(false);
     }
   };
 
@@ -170,6 +139,31 @@ const StaffDashboard = () => {
       month: 'long', 
       day: 'numeric' 
     });
+  };
+
+  // Helper to get student name
+  const getStudentName = (ticket) => {
+    if (!ticket) return 'Customer';
+    // Try different fields the backend might send
+    if (ticket.customer_name) return ticket.customer_name;
+    if (ticket.customer_username) return ticket.customer_username;
+    if (ticket.customer && typeof ticket.customer === 'object') {
+      return ticket.customer.full_name || ticket.customer.username || 'Customer';
+    }
+    return 'Customer';
+  };
+
+  // Helper to get description
+  const getDescription = (ticket) => {
+    if (!ticket) return 'No description provided';
+    return ticket.note || ticket.description || 'No description provided';
+  };
+
+  // Helper to get estimated wait (in minutes)
+  const getEstWait = (ticket) => {
+    if (!ticket) return 0;
+    // Try various field names
+    return ticket.estimated_wait || ticket.est_wait || ticket.estimated_wait_minutes || 0;
   };
 
   if (loading) {
@@ -196,7 +190,6 @@ const StaffDashboard = () => {
 
   return (
     <div style={styles.container}>
-      {/* Header */}
       <header style={styles.header}>
         <div style={styles.headerLeft}>
           <h1 style={styles.logo}>SQ</h1>
@@ -213,7 +206,6 @@ const StaffDashboard = () => {
         </div>
       </header>
 
-      {/* Department Header */}
       <div style={styles.departmentHeader}>
         <div style={styles.departmentInfo}>
           <h1 style={styles.departmentName}>{department.name}</h1>
@@ -221,24 +213,12 @@ const StaffDashboard = () => {
             {department.is_open ? 'Open' : 'Closed'}
           </span>
         </div>
-        <div style={styles.statusActions}>
-          <button 
-            onClick={handleToggleStatus}
-            style={department.is_open ? styles.closeBtn : styles.openBtn}
-            disabled={actionLoading}
-          >
-            {actionLoading ? 'Updating...' : 'Toggle Status'}
-          </button>
-        </div>
       </div>
 
-      {/* Date */}
       <p style={styles.date}>{getTodayDate()}</p>
 
-      {/* Success Message */}
       {successMessage && <div style={styles.successBanner}>{successMessage}</div>}
 
-      {/* Stats */}
       <div style={styles.statsGrid}>
         <div style={styles.statCard}>
           <span style={styles.statValue}>{waitingList.length}</span>
@@ -256,54 +236,51 @@ const StaffDashboard = () => {
         )}
       </div>
 
-      {/* Now Serving Section */}
       {nowServing && (
         <div style={styles.nowServingSection}>
           <h3 style={styles.sectionTitle}>NOW SERVING</h3>
           <div style={styles.nowServingCard}>
             <div style={styles.nowServingInfo}>
               <span style={styles.nowServingTicket}>{nowServing.ticket_number}</span>
-              <span style={styles.nowServingCustomer}>{nowServing.customer_name || 'Customer'}</span>
-              <p style={styles.nowServingDescription}>
-                {nowServing.description || 'No description provided'}
-              </p>
-              <p style={styles.nowServingTime}>Joined: {formatTime(nowServing.created_at)}</p>
+              <span style={styles.nowServingCustomer}>👤 {getStudentName(nowServing)}</span>
+              <p style={styles.nowServingDescription}>📝 {getDescription(nowServing)}</p>
+              <p style={styles.nowServingTime}>⏰ Joined: {formatTime(nowServing.created_at)}</p>
+              <p style={styles.nowServingEstWait}>⏳ Est. Wait: {getEstWait(nowServing)} min</p>
             </div>
             <div style={styles.nowServingActions}>
               <button 
-                onClick={() => handleServeTicket(nowServing.id)}
+                onClick={() => setShowServeModal(true)}
                 style={styles.serveBtn}
                 disabled={actionLoading}
               >
-                {actionLoading ? 'Processing...' : 'Mark Served'}
+                {actionLoading ? 'Processing...' : '✅ Mark Served'}
               </button>
               <button 
-                onClick={() => handleNoShowTicket(nowServing.id)}
+                onClick={() => setShowMissedModal(true)}
                 style={styles.noShowBtn}
                 disabled={actionLoading}
+                title="Customer didn't show up"
               >
-                {actionLoading ? 'Processing...' : 'No Show'}
+                {actionLoading ? 'Processing...' : '⏰ Missed'}
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Call Next Button */}
       <div style={styles.callNextSection}>
         <button 
           onClick={handleCallNext}
           style={waitingList.length > 0 ? styles.callNextBtn : styles.callNextBtnDisabled}
           disabled={actionLoading || waitingList.length === 0}
         >
-          {actionLoading ? 'Processing...' : 'Call Next Customer'}
+          {actionLoading ? 'Processing...' : '📞 Call Next Customer'}
         </button>
         {waitingList.length === 0 && !nowServing && (
           <p style={styles.emptyMessage}>No one is waiting right now</p>
         )}
       </div>
 
-      {/* Waiting List */}
       <div style={styles.waitingListSection}>
         <h3 style={styles.sectionTitle}>Waiting List</h3>
         {waitingList.length === 0 ? (
@@ -314,23 +291,44 @@ const StaffDashboard = () => {
               <div key={ticket.id} style={styles.waitingItem}>
                 <div style={styles.waitingItemLeft}>
                   <span style={styles.waitingTicketNumber}>{ticket.ticket_number}</span>
-                  <span style={styles.waitingCustomerName}>
-                    {ticket.customer_name || 'Customer'}
-                  </span>
+                  <span style={styles.waitingCustomerName}>👤 {getStudentName(ticket)}</span>
                 </div>
                 <div style={styles.waitingItemRight}>
-                  <p style={styles.waitingDescription}>
-                    {ticket.description || 'No description'}
-                  </p>
-                  <span style={styles.waitingTime}>
-                    {formatTime(ticket.created_at)}
-                  </span>
+                  <p style={styles.waitingDescription}>📝 {getDescription(ticket)}</p>
+                  <span style={styles.waitingEstWait}>⏳ {getEstWait(ticket)} min</span>
+                  <span style={styles.waitingTime}>⏰ {formatTime(ticket.created_at)}</span>
                 </div>
               </div>
             ))}
           </div>
         )}
       </div>
+
+      {/* Serve Modal */}
+      <Modal
+        isOpen={showServeModal}
+        onClose={() => setShowServeModal(false)}
+        onConfirm={() => handleServeTicket(nowServing?.id)}
+        title="Mark as Served"
+        message={`Mark ticket ${nowServing?.ticket_number || ''} as served?`}
+        confirmText="Yes, Mark Served"
+        confirmColor="#27ae60"
+        loading={modalLoading}
+        type="confirm"
+      />
+
+      {/* Missed Modal */}
+      <Modal
+        isOpen={showMissedModal}
+        onClose={() => setShowMissedModal(false)}
+        onConfirm={() => handleNoShowTicket(nowServing?.id)}
+        title="Mark as Missed"
+        message={`Mark ticket ${nowServing?.ticket_number || ''} as missed (no-show)?`}
+        confirmText="Yes, Mark Missed"
+        confirmColor="#e67e22"
+        loading={modalLoading}
+        type="confirm"
+      />
     </div>
   );
 };
@@ -464,28 +462,6 @@ const styles = {
     fontSize: '14px',
     fontWeight: 'bold',
   },
-  statusActions: {
-    display: 'flex',
-    gap: '10px',
-  },
-  openBtn: {
-    padding: '8px 16px',
-    backgroundColor: '#27ae60',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontSize: '14px',
-  },
-  closeBtn: {
-    padding: '8px 16px',
-    backgroundColor: '#e74c3c',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontSize: '14px',
-  },
   date: {
     padding: '10px 30px 0 30px',
     color: '#888',
@@ -562,6 +538,12 @@ const styles = {
   nowServingTime: {
     color: '#888',
     fontSize: '14px',
+  },
+  nowServingEstWait: {
+    color: '#1a73e8',
+    fontSize: '16px',
+    fontWeight: 'bold',
+    marginTop: '5px',
   },
   nowServingActions: {
     display: 'flex',
@@ -662,6 +644,11 @@ const styles = {
     color: '#666',
     fontSize: '14px',
     margin: 0,
+  },
+  waitingEstWait: {
+    color: '#e67e22',
+    fontWeight: 'bold',
+    fontSize: '14px',
   },
   waitingTime: {
     color: '#888',

@@ -381,7 +381,7 @@ class QueueStatusView(APIView):
 class ReportSummaryView(APIView):
     """GET /api/reports/summary/?date=YYYY-MM-DD - per-department daily report."""
 
-    permission_classes = [IsAdmin]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         date_str = request.query_params.get("date")
