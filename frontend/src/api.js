@@ -40,10 +40,12 @@ const apiRequest = async (endpoint, method = 'GET', data = null) => {
     const response = await fetch(url, config);
     console.log(`Response status for ${endpoint}:`, response.status);
     
-    if (response.status === 401) {
-      console.warn('401 Unauthorized - Clearing token');
+    if (response.status === 401 && token) {
+      console.warn('401 Unauthorized - Clearing invalid token');
       localStorage.removeItem('authToken');
-      window.location.href = '/';
+      if (window.location.pathname !== '/' && window.location.pathname !== '/login' && window.location.pathname !== '/register') {
+        window.location.href = '/login';
+      }
     }
     
     return response;

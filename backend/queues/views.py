@@ -51,8 +51,9 @@ class DepartmentViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = Department.objects.all()
-        # Students only see active departments; admins see everything.
-        if self.request.user.role != "admin":
+        # Students and unauthenticated visitors only see active departments; admins see everything.
+        user_role = getattr(self.request.user, "role", None) if self.request.user and self.request.user.is_authenticated else None
+        if user_role != "admin":
             queryset = queryset.filter(is_active=True)
         return queryset
 
