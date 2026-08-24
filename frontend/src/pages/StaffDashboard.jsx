@@ -62,7 +62,7 @@ const StaffDashboard = () => {
         const data = await response.json();
         const calledTicket = data.ticket || data;
         setNowServing(calledTicket);
-        setSuccessMessage(`📢 Called ticket ${calledTicket?.ticket_code || 'next customer'}`);
+        setSuccessMessage(`Called ticket ${calledTicket?.ticket_code || 'next customer'}`);
         await fetchStaffQueue();
       } else {
         const errorData = await response.json().catch(() => ({}));
@@ -80,7 +80,7 @@ const StaffDashboard = () => {
     try {
       const response = await serveTicket(ticketId);
       if (response.ok) {
-        setSuccessMessage('✅ Ticket marked as served.');
+        setSuccessMessage('Ticket marked as served.');
         setNowServing(null);
         await fetchStaffQueue();
       } else {
@@ -100,7 +100,7 @@ const StaffDashboard = () => {
     try {
       const response = await noShowTicket(ticketId);
       if (response.ok) {
-        setSuccessMessage('⏰ Ticket marked as No-Show.');
+        setSuccessMessage('Ticket marked as No-Show.');
         setNowServing(null);
         await fetchStaffQueue();
       } else {
@@ -131,7 +131,7 @@ const StaffDashboard = () => {
             <Link to="/" className="nav-link">Home</Link>
             <div className="user-auth-pill">
               <span className="user-greeting">
-                👤 <strong>{user?.first_name || user?.username}</strong>
+                Logged in: <strong>{user?.first_name || user?.username}</strong>
                 <span className="role-tag-pill">Staff</span>
               </span>
               <button onClick={logoutUser} className="btn-logout-sm">Logout</button>
@@ -150,17 +150,17 @@ const StaffDashboard = () => {
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <div className="banner-badge">
-              <span>👥 Waiting: <strong>{waitingList.length}</strong></span>
+              <span>Waiting: <strong>{waitingList.length}</strong></span>
             </div>
             <button onClick={handleCallNext} disabled={actionLoading || nowServing} className="btn-primary" style={{ padding: '10px 24px', fontSize: '1rem', background: nowServing ? '#94a3b8' : '#003366' }}>
-              {actionLoading ? 'Calling...' : (nowServing ? 'Serving Active Customer' : '📢 Call Next Customer')}
+              {actionLoading ? 'Calling...' : (nowServing ? 'Serving Active Ticket' : 'Call Next Customer')}
             </button>
           </div>
         </div>
 
         {error && (
           <div style={{ background: '#fef2f2', border: '1px solid #fecaca', color: '#991b1b', padding: '1rem', borderRadius: '12px', marginBottom: '1.5rem', fontWeight: '600' }}>
-            ❌ {error}
+            {error}
           </div>
         )}
 
@@ -205,10 +205,10 @@ const StaffDashboard = () => {
 
               <div style={{ display: 'flex', gap: '10px' }}>
                 <button onClick={() => setShowServeModal(true)} className="btn-action-success" style={{ padding: '12px 20px', fontSize: '0.95rem' }}>
-                  ✅ Complete Service
+                  Complete Service
                 </button>
                 <button onClick={() => setShowMissedModal(true)} className="btn-action-warning" style={{ padding: '12px 20px', fontSize: '0.95rem' }}>
-                  ⏰ Mark No-Show
+                  Mark No-Show
                 </button>
               </div>
             </div>
@@ -220,7 +220,7 @@ const StaffDashboard = () => {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem' }}>
             <h2 style={{ fontSize: '1.5rem', color: '#003366', fontWeight: 800 }}>Waiting Queue ({waitingList.length})</h2>
             <button onClick={fetchStaffQueue} style={{ background: 'transparent', border: '1px solid #cbd5e1', padding: '6px 14px', borderRadius: '6px', cursor: 'pointer', fontWeight: '600', color: '#64748b' }}>
-              🔄 Refresh List
+              Refresh List
             </button>
           </div>
 
@@ -228,7 +228,6 @@ const StaffDashboard = () => {
             <div style={{ textAlign: 'center', padding: '3rem', color: '#64748b' }}>Loading waiting tickets...</div>
           ) : waitingList.length === 0 ? (
             <div className="card" style={{ textAlign: 'center', padding: '3rem', color: '#64748b' }}>
-              <div style={{ fontSize: '2.5rem', marginBottom: '8px' }}>🎉</div>
               <h3>No Students Waiting</h3>
               <p>The queue for this department is currently empty.</p>
             </div>
@@ -237,7 +236,7 @@ const StaffDashboard = () => {
               <table className="modern-table">
                 <thead>
                   <tr>
-                    <th>Pos</th>
+                    <th>Position</th>
                     <th>Ticket Code</th>
                     <th>Student Name</th>
                     <th>Student Number</th>

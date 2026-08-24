@@ -1,5 +1,5 @@
+// frontend/src/pages/LandingPage.jsx
 import React, { useState, useEffect } from 'react';
-import '../index.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getDepartments } from '../api';
@@ -54,14 +54,14 @@ const LandingPage = () => {
 
   return (
     <div className="landing-wrapper">
-      {/* Top Header / Navigation Bar */}
+      {/* Top Header */}
       <header className="spu-header">
         <div className="spu-header-container">
-          <div className="spu-brand" onClick={() => navigate('/')} style={{cursor: 'pointer'}}>
+          <div className="spu-brand" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
             <div className="spu-logo-badge">SPU</div>
             <div className="spu-title-group">
               <span className="spu-brand-title">Sol Plaatje University</span>
-              <span className="spu-brand-sub">Smart Queue Management</span>
+              <span className="spu-brand-sub">Campus Queue System</span>
             </div>
           </div>
           <nav className="spu-nav">
@@ -70,8 +70,8 @@ const LandingPage = () => {
             <a href="#about" className="nav-link">About SPU</a>
             {user ? (
               <div className="user-auth-pill">
-                <span className="user-greeting">👋 Hi, <strong>{user.first_name || user.username}</strong></span>
-                <button onClick={handleDashboardRedirect} className="btn-dash">My Dashboard</button>
+                <span className="user-greeting">Logged in as <strong>{user.first_name || user.username}</strong></span>
+                <button onClick={handleDashboardRedirect} className="btn-dash">Dashboard</button>
                 <button onClick={logoutUser} className="btn-logout-sm">Logout</button>
               </div>
             ) : (
@@ -86,25 +86,22 @@ const LandingPage = () => {
 
       {/* Hero Section */}
       <section className="spu-hero">
-        <div className="spu-hero-overlay"></div>
         <div className="spu-hero-content">
           <div className="hero-text-block">
-            <span className="hero-tag">🎓 SPU Campus Operations</span>
-            <h1>Skip the Line. Save Your Time.</h1>
+            <span className="hero-tag">Sol Plaatje University Student Services</span>
+            <h1>Virtual Queue Management</h1>
             <p>
-              Welcome to the official Sol Plaatje University Smart Queue System. 
-              Join campus queues virtually from anywhere, track estimated wait times in real-time, 
-              and receive notifications when it’s your turn.
+              Join department service queues online from anywhere on campus, track your estimated wait time in real-time, and receive updates when staff are ready to assist you.
             </p>
             <div className="hero-cta-group">
               {user ? (
                 <button onClick={handleDashboardRedirect} className="btn-hero-primary">
-                  Go to Dashboard →
+                  Go to Student Dashboard
                 </button>
               ) : (
                 <>
-                  <Link to="/register" className="btn-hero-primary">Get Started Now</Link>
-                  <Link to="/login" className="btn-hero-secondary">Student / Staff Login</Link>
+                  <Link to="/register" className="btn-hero-primary">Register Account</Link>
+                  <Link to="/login" className="btn-hero-secondary">Sign In</Link>
                 </>
               )}
             </div>
@@ -114,36 +111,35 @@ const LandingPage = () => {
             <div className="hero-img-frame">
               <img 
                 src="https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=800&q=80" 
-                alt="Sol Plaatje University Campus Life" 
+                alt="Sol Plaatje University Campus" 
                 className="hero-img"
               />
               <div className="hero-badge-float">
-                <span className="pulse-dot"></span>
-                <span>{departments.length || 5} Departments Active Today</span>
+                <span>{departments.length || 5} Departments Active</span>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Key Stats Bar */}
+      {/* Stats Bar */}
       <section className="stats-bar">
         <div className="stats-container">
           <div className="stat-item">
-            <h3>⚡ 100%</h3>
-            <p>Digital Queue Management</p>
+            <h3>Digital</h3>
+            <p>Online Queue Tickets</p>
           </div>
           <div className="stat-item">
-            <h3>⏱️ &lt; 15 mins</h3>
-            <p>Average Wait Time Saved</p>
+            <h3>Real-Time</h3>
+            <p>Live Wait Estimates</p>
           </div>
           <div className="stat-item">
-            <h3>🏫 3 Campuses</h3>
+            <h3>3 Campuses</h3>
             <p>Central, South & Luka Jantjie</p>
           </div>
           <div className="stat-item">
-            <h3>📱 Real-Time</h3>
-            <p>Live Queue Tracking</p>
+            <h3>Multi-Desk</h3>
+            <p>Academic & Student Support</p>
           </div>
         </div>
       </section>
@@ -151,13 +147,13 @@ const LandingPage = () => {
       {/* Services Listing Section */}
       <section id="services" className="services-section">
         <div className="section-header">
-          <span className="section-badge">CAMPUS SERVICES</span>
-          <h2>Active Service Queues</h2>
-          <p>Select a department below to view operating hours and current queue status.</p>
+          <span className="section-badge">Student Services</span>
+          <h2>Active Department Queues</h2>
+          <p>Select a department service below to view operating hours and join the queue.</p>
         </div>
 
         {loading ? (
-          <div className="loading-spinner">Loading departments...</div>
+          <div style={{ textAlign: 'center', padding: '3rem', color: '#64748b' }}>Loading departments...</div>
         ) : (
           <div className="services-grid">
             {departments.map((dept) => (
@@ -169,7 +165,7 @@ const LandingPage = () => {
                     className="card-img"
                   />
                   <span className={`status-pill ${dept.is_open ? 'open' : 'closed'}`}>
-                    {dept.is_open ? '🟢 Open Now' : '🔴 Closed'}
+                    {dept.is_open ? 'Open' : 'Closed'}
                   </span>
                 </div>
                 <div className="card-body">
@@ -178,8 +174,8 @@ const LandingPage = () => {
                   <p className="dept-desc">{dept.description || 'Assisting students with university inquiries and support.'}</p>
                   
                   <div className="dept-meta">
-                    <div>📍 {dept.location || 'Central Campus'}</div>
-                    <div>🕒 {dept.opens_at ? dept.opens_at.slice(0,5) : '08:00'} - {dept.closes_at ? dept.closes_at.slice(0,5) : '16:00'}</div>
+                    <div>Location: {dept.location || 'Central Campus'}</div>
+                    <div>Hours: {dept.opens_at ? dept.opens_at.slice(0,5) : '08:00'} - {dept.closes_at ? dept.closes_at.slice(0,5) : '16:00'}</div>
                   </div>
 
                   <div className="dept-stats-row">
@@ -195,9 +191,9 @@ const LandingPage = () => {
 
                   <div className="card-footer">
                     {user ? (
-                      <Link to="/dashboard" className="btn-join-dept">Join Queue →</Link>
+                      <Link to="/dashboard" className="btn-join-dept">Join Queue</Link>
                     ) : (
-                      <Link to="/login" className="btn-join-dept">Login to Join →</Link>
+                      <Link to="/login" className="btn-join-dept">Sign In to Join</Link>
                     )}
                   </div>
                 </div>
@@ -210,56 +206,55 @@ const LandingPage = () => {
       {/* How It Works Section */}
       <section id="how-it-works" className="how-section">
         <div className="section-header">
-          <span className="section-badge">SIMPLE & CONVENIENT</span>
-          <h2>How Smart Queue Works</h2>
-          <p>Get served in 3 simple steps without standing in long corridors.</p>
+          <span className="section-badge">Process</span>
+          <h2>How to Use the Service</h2>
+          <p>Follow these steps to access department services efficiently.</p>
         </div>
 
         <div className="steps-grid">
           <div className="step-card">
             <div className="step-num">1</div>
-            <h3>Select & Register</h3>
-            <p>Log in with your SPU student credentials and choose the department service you need help with.</p>
+            <h3>Sign In & Select Service</h3>
+            <p>Log in with your student account credentials and choose the department you need to visit.</p>
           </div>
           <div className="step-card">
             <div className="step-num">2</div>
-            <h3>Track Live Ticket</h3>
-            <p>Get a digital ticket number (e.g. ICT-004) with estimated wait time and live updates on your phone.</p>
+            <h3>Receive Ticket</h3>
+            <p>Get your digital ticket number with estimated wait times updated in real-time.</p>
           </div>
           <div className="step-card">
             <div className="step-num">3</div>
-            <h3>Arrive When Called</h3>
-            <p>Walk over to the service counter when your ticket is called and receive instant staff support!</p>
+            <h3>Report to Counter</h3>
+            <p>Arrive at the department counter when your ticket number is called by staff.</p>
           </div>
         </div>
       </section>
 
-      {/* SPU Campus Showcase */}
+      {/* About SPU Section */}
       <section id="about" className="about-spu-section">
         <div className="about-content">
           <div className="about-text">
-            <span className="section-badge">SOL PLAATJE UNIVERSITY</span>
-            <h2>Kimberley's Premier Institution</h2>
+            <span className="section-badge">Sol Plaatje University</span>
+            <h2>Kimberley Campus Operations</h2>
             <p>
-              Established in 2013 in the historic diamond city of Kimberley, Sol Plaatje University is dedicated 
-              to academic excellence, innovation, and seamless student support services across Northern Cape.
+              Sol Plaatje University provides centralized student administration services across campuses in Kimberley, Northern Cape.
             </p>
             <ul className="about-list">
-              <li>✅ Centralized digital student services</li>
-              <li>✅ Reduced waiting times for NSFAS, Financial Aid & IT Support</li>
-              <li>✅ Real-time staff queue dispatching</li>
+              <li>Integrated digital student queue management</li>
+              <li>Support for Financial Aid, NSFAS, ICT Helpdesk, and Registration</li>
+              <li>Real-time counter dispatching for staff</li>
             </ul>
           </div>
           <div className="about-gallery">
             <img 
               src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=600&q=80" 
-              alt="Students on SPU Campus" 
-              className="gallery-img main"
+              alt="SPU Students" 
+              className="gallery-img"
             />
             <img 
               src="https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?auto=format&fit=crop&w=600&q=80" 
-              alt="SPU Library" 
-              className="gallery-img sub"
+              alt="SPU Campus Library" 
+              className="gallery-img"
             />
           </div>
         </div>
@@ -280,16 +275,16 @@ const LandingPage = () => {
             </p>
           </div>
           <div className="footer-col">
-            <h4>Quick Links</h4>
+            <h4>Navigation</h4>
             <ul>
-              <li><a href="#services">Departments & Services</a></li>
+              <li><a href="#services">Services</a></li>
               <li><a href="#how-it-works">How it Works</a></li>
               <li><Link to="/login">Student Login</Link></li>
               <li><Link to="/register">Register Account</Link></li>
             </ul>
           </div>
           <div className="footer-col">
-            <h4>Support Services</h4>
+            <h4>Support Enquiries</h4>
             <ul>
               <li>ICT Helpdesk: helpdesk@spu.ac.za</li>
               <li>Financial Aid: financialaid@spu.ac.za</li>
@@ -298,7 +293,7 @@ const LandingPage = () => {
           </div>
         </div>
         <div className="footer-bottom">
-          <p>© {new Date().getFullYear()} Sol Plaatje University Smart Queue System. Developed for Service Driven Systems.</p>
+          <p>© {new Date().getFullYear()} Sol Plaatje University. All Rights Reserved.</p>
         </div>
       </footer>
     </div>

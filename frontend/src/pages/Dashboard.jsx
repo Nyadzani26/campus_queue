@@ -30,12 +30,10 @@ const Dashboard = () => {
   const [showAlertModal, setShowAlertModal] = useState(false);
   const [alertTitle, setAlertTitle] = useState('');
   const [alertMessage, setAlertMessage] = useState('');
-  const [alertType, setAlertType] = useState('success');
 
-  const showAlert = (title, message, type = 'success') => {
+  const showAlert = (title, message) => {
     setAlertTitle(title);
     setAlertMessage(message);
-    setAlertType(type);
     setShowAlertModal(true);
   };
 
@@ -123,12 +121,12 @@ const Dashboard = () => {
         setShowJoinModal(false);
         setNote('');
         fetchTicketHistory();
-        showAlert('🎉 Ticket Issued!', `You have been issued ticket ${data.ticket_code || data.number}. Position #${data.position}`);
+        showAlert('Ticket Issued', `Ticket ${data.ticket_code || data.number} issued. Position #${data.position} in line.`);
       } else {
-        showAlert('Unable to Join Queue', data.detail || 'Could not join queue.', 'error');
+        showAlert('Queue Request Failed', data.detail || 'Could not join queue.');
       }
     } catch (err) {
-      showAlert('Network Error', 'Could not connect to the server', 'error');
+      showAlert('Network Error', 'Could not connect to the server');
     } finally {
       setJoinLoading(false);
     }
@@ -143,13 +141,13 @@ const Dashboard = () => {
         setMyTicket(null);
         setShowCancelModal(false);
         fetchTicketHistory();
-        showAlert('Ticket Cancelled', 'Your ticket was successfully cancelled.', 'success');
+        showAlert('Ticket Cancelled', 'Your ticket was cancelled.');
       } else {
         const data = await response.json();
-        showAlert('Cancellation Failed', data.detail || 'Failed to cancel ticket.', 'error');
+        showAlert('Cancellation Error', data.detail || 'Failed to cancel ticket.');
       }
     } catch (err) {
-      showAlert('Error', 'Network error while cancelling ticket.', 'error');
+      showAlert('Error', 'Network error while cancelling ticket.');
     } finally {
       setCancelLoading(false);
     }
@@ -171,7 +169,7 @@ const Dashboard = () => {
             <Link to="/" className="nav-link">Home</Link>
             <div className="user-auth-pill">
               <span className="user-greeting">
-                👋 <strong>{user?.first_name || user?.username}</strong>
+                Logged in: <strong>{user?.first_name || user?.username}</strong>
                 <span className="role-tag-pill">{user?.role || 'Student'}</span>
               </span>
               <button onClick={logoutUser} className="btn-logout-sm">Logout</button>
@@ -186,16 +184,16 @@ const Dashboard = () => {
         <div className="page-banner">
           <div className="page-banner-title">
             <h1>Student Service Hub</h1>
-            <p>Welcome back, <strong>{user?.first_name} {user?.last_name}</strong> (Student ID: <strong>{user?.student_number || 'SPU Student'}</strong>)</p>
+            <p>Welcome, <strong>{user?.first_name} {user?.last_name}</strong> (Student Number: <strong>{user?.student_number || 'SPU Student'}</strong>)</p>
           </div>
           <div className="banner-badge">
-            <span>🟢 Campus Services Online</span>
+            <span>System Active</span>
           </div>
         </div>
 
         {error && (
           <div style={{ background: '#fef2f2', border: '1px solid #fecaca', color: '#991b1b', padding: '1rem', borderRadius: '14px', marginBottom: '1.8rem', fontWeight: '600' }}>
-            ❌ {error}
+            {error}
           </div>
         )}
 
@@ -205,10 +203,10 @@ const Dashboard = () => {
             <div className="ticket-header-row">
               <div>
                 <span style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.75)', textTransform: 'uppercase', fontWeight: 800, letterSpacing: '1px' }}>
-                  YOUR LIVE DIGITAL TICKET
+                  ACTIVE TICKET
                 </span>
                 <h3 style={{ fontSize: '1.5rem', color: '#fff', margin: '4px 0 0', fontWeight: 800 }}>
-                  {myTicket.department || 'Department Service Queue'}
+                  {myTicket.department || 'Department Queue'}
                 </h3>
               </div>
               <span className={`ticket-status-pill ${myTicket.status}`}>
@@ -223,13 +221,13 @@ const Dashboard = () => {
               </div>
 
               <div className="ticket-meta-box">
-                <span className="ticket-meta-label">Queue Position</span>
-                <span className="ticket-meta-value">#{myTicket.position || 1} in line</span>
+                <span className="ticket-meta-label">Position in Line</span>
+                <span className="ticket-meta-value">#{myTicket.position || 1}</span>
               </div>
 
               <div className="ticket-meta-box">
-                <span className="ticket-meta-label">Est. Wait Time</span>
-                <span className="ticket-meta-value">⏱️ ~{myTicket.estimated_wait_minutes || myTicket.estimated_wait || 5} mins</span>
+                <span className="ticket-meta-label">Estimated Wait</span>
+                <span className="ticket-meta-value">{myTicket.estimated_wait_minutes || myTicket.estimated_wait || 5} min</span>
               </div>
 
               <div>
@@ -244,12 +242,12 @@ const Dashboard = () => {
         {/* Available Department Queues */}
         <section style={{ marginBottom: '3rem' }}>
           <div style={{ marginBottom: '1.8rem' }}>
-            <h2 style={{ fontSize: '1.8rem', color: '#003366', fontWeight: '900' }}>Campus Service Queues</h2>
-            <p style={{ color: '#64748b', fontSize: '1.02rem' }}>Browse active department service desks and join a queue virtually.</p>
+            <h2 style={{ fontSize: '1.8rem', color: '#003366', fontWeight: '900' }}>Department Services</h2>
+            <p style={{ color: '#64748b', fontSize: '1.02rem' }}>Select a service desk below to join today's queue.</p>
           </div>
 
           {loading ? (
-            <div style={{ textAlign: 'center', padding: '3rem', color: '#64748b', fontSize: '1.1rem' }}>Loading active queues...</div>
+            <div style={{ textAlign: 'center', padding: '3rem', color: '#64748b', fontSize: '1.1rem' }}>Loading departments...</div>
           ) : (
             <div className="services-grid">
               {departments.map((dept) => (
@@ -261,7 +259,7 @@ const Dashboard = () => {
                       className="card-img"
                     />
                     <span className={`status-pill ${dept.is_open ? 'open' : 'closed'}`}>
-                      {dept.is_open ? '🟢 Open Now' : '🔴 Closed'}
+                      {dept.is_open ? 'Open' : 'Closed'}
                     </span>
                   </div>
                   <div className="card-body">
@@ -270,8 +268,8 @@ const Dashboard = () => {
                     <p className="dept-desc">{dept.description || 'Assisting students with inquiries and support.'}</p>
                     
                     <div className="dept-meta">
-                      <div>📍 {dept.location || 'Central Campus'}</div>
-                      <div>🕒 {dept.opens_at ? dept.opens_at.slice(0,5) : '08:00'} - {dept.closes_at ? dept.closes_at.slice(0,5) : '16:00'}</div>
+                      <div>Location: {dept.location || 'Central Campus'}</div>
+                      <div>Hours: {dept.opens_at ? dept.opens_at.slice(0,5) : '08:00'} - {dept.closes_at ? dept.closes_at.slice(0,5) : '16:00'}</div>
                     </div>
 
                     <div className="dept-stats-row">
@@ -298,7 +296,7 @@ const Dashboard = () => {
                           cursor: (!dept.is_open || (myTicket && myTicket.status !== 'CANCELLED')) ? 'not-allowed' : 'pointer'
                         }}
                       >
-                        {myTicket && myTicket.status !== 'CANCELLED' ? 'Already in Queue' : (dept.is_open ? 'Join Queue →' : 'Queue Closed')}
+                        {myTicket && myTicket.status !== 'CANCELLED' ? 'Active Ticket Present' : (dept.is_open ? 'Join Queue' : 'Queue Closed')}
                       </button>
                     </div>
                   </div>
@@ -312,8 +310,8 @@ const Dashboard = () => {
         {ticketHistory.length > 0 && (
           <section>
             <div style={{ marginBottom: '1.4rem' }}>
-              <h2 style={{ fontSize: '1.6rem', color: '#003366', fontWeight: '900' }}>Your Ticket History</h2>
-              <p style={{ color: '#64748b', fontSize: '0.98rem' }}>Recent queue requests and consultation records.</p>
+              <h2 style={{ fontSize: '1.6rem', color: '#003366', fontWeight: '900' }}>Ticket History</h2>
+              <p style={{ color: '#64748b', fontSize: '0.98rem' }}>Previous tickets issued during this session.</p>
             </div>
 
             <div className="modern-table-wrapper">
@@ -324,7 +322,7 @@ const Dashboard = () => {
                     <th>Department</th>
                     <th>Status</th>
                     <th>Issued At</th>
-                    <th>Served / Closed</th>
+                    <th>Closed At</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -355,21 +353,21 @@ const Dashboard = () => {
         >
           <div style={{ padding: '0.5rem 0' }}>
             <p style={{ color: '#64748b', fontSize: '0.95rem', marginBottom: '1.2rem' }}>
-              You are requesting a ticket for <strong>{selectedDepartment?.name}</strong>. Add an optional note for staff.
+              Request a ticket for <strong>{selectedDepartment?.name}</strong>. Add an optional note for staff reference.
             </p>
             <div style={{ marginBottom: '1.4rem' }}>
               <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '700', color: '#1e293b', marginBottom: '6px' }}>Reason for Visit (Optional)</label>
               <textarea 
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
-                placeholder="e.g. NSFAS allowance query, IT password reset..."
+                placeholder="Brief reason for your visit..."
                 style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid #cbd5e1', fontFamily: 'inherit', resize: 'vertical', minHeight: '85px', boxSizing: 'border-box' }}
               />
             </div>
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
               <button onClick={() => setShowJoinModal(false)} style={{ background: '#e2e8f0', color: '#1e293b', border: 'none', padding: '10px 20px', borderRadius: '8px', fontWeight: '700', cursor: 'pointer' }}>Cancel</button>
               <button onClick={handleJoinQueue} disabled={joinLoading} className="btn-primary">
-                {joinLoading ? 'Joining...' : 'Confirm & Join Queue'}
+                {joinLoading ? 'Joining...' : 'Confirm Ticket Request'}
               </button>
             </div>
           </div>
@@ -379,16 +377,16 @@ const Dashboard = () => {
         <Modal
           isOpen={showCancelModal}
           onClose={() => setShowCancelModal(false)}
-          title="Cancel Your Ticket?"
+          title="Cancel Ticket"
         >
           <div style={{ padding: '0.5rem 0' }}>
             <p style={{ color: '#64748b', marginBottom: '1.5rem' }}>
-              Are you sure you want to cancel ticket <strong>{myTicket?.ticket_code}</strong>? You will lose your position in line.
+              Confirm cancellation of ticket <strong>{myTicket?.ticket_code}</strong>?
             </p>
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
               <button onClick={() => setShowCancelModal(false)} style={{ background: '#e2e8f0', color: '#1e293b', border: 'none', padding: '10px 20px', borderRadius: '8px', fontWeight: '700', cursor: 'pointer' }}>Keep Ticket</button>
               <button onClick={handleCancelTicket} disabled={cancelLoading} className="btn-cancel-ticket" style={{ background: '#dc2626', color: '#fff' }}>
-                {cancelLoading ? 'Cancelling...' : 'Yes, Cancel Ticket'}
+                {cancelLoading ? 'Cancelling...' : 'Confirm Cancel'}
               </button>
             </div>
           </div>
@@ -401,7 +399,7 @@ const Dashboard = () => {
           title={alertTitle}
         >
           <div style={{ padding: '0.5rem 0' }}>
-            <p style={{ color: alertType === 'error' ? '#991b1b' : '#1e293b', fontSize: '1rem', marginBottom: '1.5rem' }}>{alertMessage}</p>
+            <p style={{ color: '#1e293b', fontSize: '1rem', marginBottom: '1.5rem' }}>{alertMessage}</p>
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <button onClick={() => setShowAlertModal(false)} className="btn-primary">OK</button>
             </div>

@@ -45,13 +45,12 @@ const AdminDashboard = () => {
           }
           setLastUpdated(new Date());
           setError('');
-          setToast({ message: '✅ Dashboard updated', type: 'success' });
+          setToast({ message: 'Dashboard updated', type: 'success' });
           setTimeout(() => setToast(null), 3000);
           return;
         }
       }
 
-      // Fallback to departments list if report endpoint fails
       const deptResponse = await getDepartments();
       if (deptResponse.ok) {
         const data = await deptResponse.json();
@@ -84,7 +83,7 @@ const AdminDashboard = () => {
             <Link to="/" className="nav-link">Home</Link>
             <div className="user-auth-pill">
               <span className="user-greeting">
-                🛡️ <strong>{user?.first_name || user?.username}</strong>
+                Logged in: <strong>{user?.first_name || user?.username}</strong>
                 <span className="role-tag-pill" style={{ background: '#ef4444', color: '#fff' }}>Admin</span>
               </span>
               <button onClick={logoutUser} className="btn-logout-sm">Logout</button>
@@ -106,7 +105,7 @@ const AdminDashboard = () => {
               Last synced: <strong>{lastUpdated.toLocaleTimeString()}</strong>
             </span>
             <button onClick={fetchAllData} className="btn-primary" style={{ padding: '8px 16px', fontSize: '0.88rem' }}>
-              🔄 Manual Refresh
+              Refresh Data
             </button>
           </div>
         </div>
@@ -119,7 +118,7 @@ const AdminDashboard = () => {
 
         {error && (
           <div style={{ background: '#fef2f2', border: '1px solid #fecaca', color: '#991b1b', padding: '1rem', borderRadius: '12px', marginBottom: '1.5rem', fontWeight: '600' }}>
-            ❌ {error}
+            {error}
           </div>
         )}
 
@@ -134,13 +133,13 @@ const AdminDashboard = () => {
           <div className="admin-stat-card served">
             <span className="stat-title">Tickets Served</span>
             <div className="stat-number" style={{ color: '#059669' }}>{summary.total_served}</div>
-            <span style={{ fontSize: '0.8rem', color: '#10b981', fontWeight: '700' }}>Completed Counter Consultations</span>
+            <span style={{ fontSize: '0.8rem', color: '#10b981', fontWeight: '700' }}>Completed Consultations</span>
           </div>
 
           <div className="admin-stat-card waiting" style={{ borderTopColor: '#6366f1' }}>
             <span className="stat-title">Currently Waiting</span>
             <div className="stat-number" style={{ color: '#4f46e5' }}>{summary.total_waiting}</div>
-            <span style={{ fontSize: '0.8rem', color: '#6366f1', fontWeight: '700' }}>In Active Virtual Queues</span>
+            <span style={{ fontSize: '0.8rem', color: '#6366f1', fontWeight: '700' }}>In Active Queues</span>
           </div>
 
           <div className="admin-stat-card noshow">
@@ -152,7 +151,7 @@ const AdminDashboard = () => {
           <div className="admin-stat-card cancelled">
             <span className="stat-title">Cancelled</span>
             <div className="stat-number" style={{ color: '#dc2626' }}>{summary.total_cancelled}</div>
-            <span style={{ fontSize: '0.8rem', color: '#ef4444', fontWeight: '700' }}>Self-Cancelled Tickets</span>
+            <span style={{ fontSize: '0.8rem', color: '#ef4444', fontWeight: '700' }}>Cancelled Tickets</span>
           </div>
         </section>
 
