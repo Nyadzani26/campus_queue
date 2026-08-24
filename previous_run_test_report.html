@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SPU SmartQueue API Test Report - Previous Run</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #f8fafc; color: #1e293b; margin: 0; padding: 30px; }
+    .container { max-width: 1200px; margin: 0 auto; background: #ffffff; padding: 30px; border-radius: 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+    .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #003366; padding-bottom: 20px; margin-bottom: 25px; }
+    .brand { font-size: 1.6rem; font-weight: 800; color: #003366; }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 30px; }
+    .stat-card { background: #f1f5f9; padding: 18px; border-radius: 10px; text-align: center; border: 1px solid #cbd5e1; }
+    .stat-val { font-size: 1.8rem; font-weight: 800; color: #003366; margin-top: 4px; }
+    .table-wrapper { overflow-x: auto; margin-top: 20px; }
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    th { background: #003366; color: white; padding: 12px; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div>
+        <div class="brand">Sol Plaatje University - SmartQueue API Test Report</div>
+        <div style="color: #64748b; margin-top: 4px;">Run Timestamp: 2026-08-24 (Previous Run Analysis)</div>
+      </div>
+      <div style="background: #003366; color: white; padding: 8px 16px; border-radius: 8px; font-weight: bold;">
+        Collection: SPU SmartQueue API Tests
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div style="color: #64748b; font-size: 0.85rem; font-weight: bold; text-transform: uppercase;">Total Assertions</div>
+        <div class="stat-val">90</div>
+      </div>
+      <div class="stat-card" style="border-top: 4px solid #10b981;">
+        <div style="color: #10b981; font-size: 0.85rem; font-weight: bold; text-transform: uppercase;">Passed</div>
+        <div class="stat-val" style="color: #10b981;">83</div>
+      </div>
+      <div class="stat-card" style="border-top: 4px solid #ef4444;">
+        <div style="color: #ef4444; font-size: 0.85rem; font-weight: bold; text-transform: uppercase;">Failed / Error Handling</div>
+        <div class="stat-val" style="color: #ef4444;">7</div>
+      </div>
+      <div class="stat-card" style="border-top: 4px solid #3b82f6;">
+        <div style="color: #3b82f6; font-size: 0.85rem; font-weight: bold; text-transform: uppercase;">Pass Rate</div>
+        <div class="stat-val" style="color: #3b82f6;">92.2%</div>
+      </div>
+    </div>
+
+    <h2>Detailed Endpoint Execution Results</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>HTTP Status</th>
+            <th>Endpoint Scenario</th>
+            <th>URL</th>
+            <th>Latency</th>
+            <th>Test Assertions & Error Handling</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#1</td>
+      <td style="padding: 12px;">
+        <span style="background: #f59e0b; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          401 Unauthorized
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">API Root</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">65 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #ef4444; font-weight: bold;">
+            ✗ FAIL
+          </span>
+          <span style="color: #334155; margin-left: 6px;">API root responds with 200</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Response time is acceptable (<1000ms)</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#2</td>
+      <td style="padding: 12px;">
+        <span style="background: #f59e0b; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          400 Bad Request
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Register - Student (valid)</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/auth/register/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">19 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #ef4444; font-weight: bold;">
+            ✗ FAIL
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Register returns success or 201 Created</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Response time is acceptable (<1000ms)</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Response is valid JSON</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#3</td>
+      <td style="padding: 12px;">
+        <span style="background: #f59e0b; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          400 Bad Request
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Register - Missing required field (negative)</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/auth/register/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">7 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Rejects incomplete registration with 400</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#4</td>
+      <td style="padding: 12px;">
+        <span style="background: #10b981; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          200 OK
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Login - Student (valid credentials)</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/auth/login/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">1102 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Login succeeds with 200</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Response contains auth token</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #ef4444; font-weight: bold;">
+            ✗ FAIL
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Response time is acceptable (<1000ms)</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#5</td>
+      <td style="padding: 12px;">
+        <span style="background: #10b981; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          200 OK
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Login - Staff (valid credentials)</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/auth/login/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">1055 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Login succeeds with 200</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Response contains auth token</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#6</td>
+      <td style="padding: 12px;">
+        <span style="background: #10b981; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          200 OK
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Login - Admin (valid credentials)</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/auth/login/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">1136 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Login succeeds with 200</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Response contains auth token</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#7</td>
+      <td style="padding: 12px;">
+        <span style="background: #f59e0b; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          400 Bad Request
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Login - Invalid password (negative)</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/auth/login/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">1013 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Rejects invalid credentials with 400 or 401</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Does not leak a token on failed login</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#8</td>
+      <td style="padding: 12px;">
+        <span style="background: #10b981; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          200 OK
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Get Profile (authenticated)</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/auth/profile/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">10 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Status code is expected</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Response time is acceptable (<1000ms)</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Response is valid JSON</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#9</td>
+      <td style="padding: 12px;">
+        <span style="background: #f59e0b; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          401 Unauthorized
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Get Profile - No token (negative)</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/auth/profile/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">5 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Rejects unauthenticated request with 401</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#10</td>
+      <td style="padding: 12px;">
+        <span style="background: #10b981; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          200 OK
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Update Profile (PATCH)</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/auth/profile/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">31 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Status code is expected</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Response time is acceptable (<1000ms)</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Response is valid JSON</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#11</td>
+      <td style="padding: 12px;">
+        <span style="background: #10b981; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          200 OK
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">List Departments (authenticated)</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/departments/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">45 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Status code is 200</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Response is paginated with results array</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Stores first department id for later CRUD tests</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Stores ICT department id for the join/staff-lifecycle chain</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#12</td>
+      <td style="padding: 12px;">
+        <span style="background: #f59e0b; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          401 Unauthorized
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">List Departments - No token (negative)</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/departments/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">5 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Rejects unauthenticated request with 401</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#13</td>
+      <td style="padding: 12px;">
+        <span style="background: #10b981; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          201 Created
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Create Department - Admin (valid)</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/departments/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">40 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Create succeeds with 201</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Returned department has expected fields</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#14</td>
+      <td style="padding: 12px;">
+        <span style="background: #f59e0b; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          403 Forbidden
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Create Department - Student (negative, forbidden)</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/departments/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">11 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Rejects non-admin create with 403</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#15</td>
+      <td style="padding: 12px;">
+        <span style="background: #f59e0b; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          400 Bad Request
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Create Department - Missing required field (negative)</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/departments/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">8 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Rejects invalid payload with 400</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#16</td>
+      <td style="padding: 12px;">
+        <span style="background: #10b981; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          200 OK
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Retrieve Department by ID</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/departments/95/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">16 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Status code is expected</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Response time is acceptable (<1000ms)</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Response is valid JSON</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#17</td>
+      <td style="padding: 12px;">
+        <span style="background: #f59e0b; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          404 Not Found
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Retrieve Department - Invalid ID (negative)</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/departments/999999/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">9 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Returns 404 for non-existent department</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#18</td>
+      <td style="padding: 12px;">
+        <span style="background: #10b981; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          200 OK
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Update Department - Admin (PUT)</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/departments/95/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">41 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Status code is expected</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Response time is acceptable (<1000ms)</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Response is valid JSON</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#19</td>
+      <td style="padding: 12px;">
+        <span style="background: #10b981; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          200 OK
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Partial Update Department - Admin (PATCH)</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/departments/95/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">34 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Status code is expected</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Response time is acceptable (<1000ms)</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#20</td>
+      <td style="padding: 12px;">
+        <span style="background: #10b981; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          201 Created
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Join Queue - Student</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/departments/1/join/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">48 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Join queue succeeds with 200 or 201</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Response time is acceptable (<1000ms)</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Stores the new ticket id for the tickets/staff-lifecycle folders</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#21</td>
+      <td style="padding: 12px;">
+        <span style="background: #f59e0b; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          401 Unauthorized
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Join Queue - No token (negative)</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/departments/1/join/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">5 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Rejects unauthenticated join with 401</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#22</td>
+      <td style="padding: 12px;">
+        <span style="background: #10b981; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          200 OK
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Delete (Soft-delete) Department - Admin</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/departments/95/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">23 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #ef4444; font-weight: bold;">
+            ✗ FAIL
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Soft-delete succeeds with 204</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#23</td>
+      <td style="padding: 12px;">
+        <span style="background: #10b981; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          200 OK
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Get My Ticket History</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/tickets/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">166 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Status code is 200</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Response time is acceptable (<1000ms)</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#24</td>
+      <td style="padding: 12px;">
+        <span style="background: #10b981; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          200 OK
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Get Active Ticket</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/tickets/active/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">39 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Status code is 200 or 404 (no active ticket)</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Stores active ticket id if present</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#25</td>
+      <td style="padding: 12px;">
+        <span style="background: #10b981; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          200 OK
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Cancel Ticket</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/tickets/29/cancel/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">44 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Cancel succeeds with 200</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#26</td>
+      <td style="padding: 12px;">
+        <span style="background: #f59e0b; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          404 Not Found
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Cancel Ticket - Invalid ID (negative)</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/tickets/999999/cancel/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">11 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Returns 404 for non-existent ticket</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#27</td>
+      <td style="padding: 12px;">
+        <span style="background: #f59e0b; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          401 Unauthorized
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Cancel Ticket - No token (negative)</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/tickets/29/cancel/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">4 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Rejects unauthenticated cancel with 401</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#28</td>
+      <td style="padding: 12px;">
+        <span style="background: #10b981; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          201 Created
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Join Queue - Fresh ticket for staff lifecycle</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/departments/1/join/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">48 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Join succeeds with 200 or 201</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Stores this ticket id for the call-next/start/serve chain below</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#29</td>
+      <td style="padding: 12px;">
+        <span style="background: #10b981; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          200 OK
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Get Staff Queue Snapshot</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/staff/queue/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">34 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Status code is expected</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Response time is acceptable (<1000ms)</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Response is valid JSON</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#30</td>
+      <td style="padding: 12px;">
+        <span style="background: #f59e0b; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          403 Forbidden
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Get Staff Queue - Student token (negative, forbidden)</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/staff/queue/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">10 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Rejects student role with 403</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#31</td>
+      <td style="padding: 12px;">
+        <span style="background: #10b981; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          200 OK
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Call Next Ticket</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/staff/call-next/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">51 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Status code is 200 or 204 (queue may be empty)</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Stores called ticket id, falling back to staff_ticket_id if not returned</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#32</td>
+      <td style="padding: 12px;">
+        <span style="background: #10b981; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          200 OK
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Start Ticket (student arrived)</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/staff/tickets/30/start/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">30 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Status code is expected</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Response time is acceptable (<1000ms)</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#33</td>
+      <td style="padding: 12px;">
+        <span style="background: #10b981; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          200 OK
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Serve Ticket (service completed)</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/staff/tickets/30/serve/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">30 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Status code is expected</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Response time is acceptable (<1000ms)</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#34</td>
+      <td style="padding: 12px;">
+        <span style="background: #f59e0b; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          400 Bad Request
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Mark Ticket No-Show</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/staff/tickets/30/no-show/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">17 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #ef4444; font-weight: bold;">
+            ✗ FAIL
+          </span>
+          <span style="color: #334155; margin-left: 6px;">No-show action returns 200 or 409 (already served/cancelled)</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#35</td>
+      <td style="padding: 12px;">
+        <span style="background: #10b981; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          200 OK
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Update Queue Status - Pause</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/staff/queue/status/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">34 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Status code is expected</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Response time is acceptable (<1000ms)</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#36</td>
+      <td style="padding: 12px;">
+        <span style="background: #10b981; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          200 OK
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Update Queue Status - Resume</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/staff/queue/status/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">37 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Status code is expected</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Response time is acceptable (<1000ms)</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#37</td>
+      <td style="padding: 12px;">
+        <span style="background: #f59e0b; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          400 Bad Request
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Update Queue Status - Invalid value (negative)</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/staff/queue/status/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">12 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Rejects invalid status value with 400</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#38</td>
+      <td style="padding: 12px;">
+        <span style="background: #10b981; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          200 OK
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Daily Summary Report - Admin</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/reports/summary/?date=2026-08-20</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">27 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Status code is expected</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Response time is acceptable (<1000ms)</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Response is valid JSON</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#39</td>
+      <td style="padding: 12px;">
+        <span style="background: #10b981; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          200 OK
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Daily Summary Report - Missing date param (negative)</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/reports/summary/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">24 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Handles missing date gracefully (200 default or 400)</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#40</td>
+      <td style="padding: 12px;">
+        <span style="background: #10b981; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          200 OK
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Daily Summary Report - Student token (negative, forbidden)</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/reports/summary/?date=2026-08-20</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">38 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #ef4444; font-weight: bold;">
+            ✗ FAIL
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Rejects student role with 403</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#41</td>
+      <td style="padding: 12px;">
+        <span style="background: #10b981; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          200 OK
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">List Users - Admin</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/users/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">20 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Status code is 200</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Response is paginated</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Stores first user id for later tests</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#42</td>
+      <td style="padding: 12px;">
+        <span style="background: #f59e0b; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          403 Forbidden
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">List Users - Student token (negative, forbidden)</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/users/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">9 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Rejects non-admin listing with 403</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#43</td>
+      <td style="padding: 12px;">
+        <span style="background: #10b981; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          200 OK
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Retrieve Single User - Admin</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/users/5/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">16 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Status code is expected</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Response time is acceptable (<1000ms)</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Response is valid JSON</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#44</td>
+      <td style="padding: 12px;">
+        <span style="background: #f59e0b; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          404 Not Found
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Retrieve User - Invalid ID (negative)</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/users/999999/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">10 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Returns 404 for non-existent user</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#45</td>
+      <td style="padding: 12px;">
+        <span style="background: #10b981; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          200 OK
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Patch User - Admin</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/users/5/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">32 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Status code is expected</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Response time is acceptable (<1000ms)</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Response is valid JSON</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#46</td>
+      <td style="padding: 12px;">
+        <span style="background: #f59e0b; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          400 Bad Request
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Create Staff Account - Admin</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/users/staff/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">18 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #ef4444; font-weight: bold;">
+            ✗ FAIL
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Status code is 200 or 201</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#47</td>
+      <td style="padding: 12px;">
+        <span style="background: #f59e0b; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          403 Forbidden
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Create Staff Account - Student token (negative, forbidden)</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/users/staff/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">9 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Rejects non-admin staff creation with 403</span>
+        </div>
+      </td>
+    </tr>
+  
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 12px; font-weight: bold; color: #64748b;">#48</td>
+      <td style="padding: 12px;">
+        <span style="background: #10b981; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85rem;">
+          200 OK
+        </span>
+      </td>
+      <td style="padding: 12px; font-weight: bold; color: #003366;">Logout - Student</td>
+      <td style="padding: 12px; font-family: monospace; font-size: 0.85rem; color: #475569;">http://localhost:8000/api/auth/logout/</td>
+      <td style="padding: 12px; color: #64748b; font-size: 0.88rem;">25 ms</td>
+      <td style="padding: 12px;">
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Logout succeeds with 200</span>
+        </div>
+      
+        <div style="margin: 3px 0; font-size: 0.88rem;">
+          <span style="color: #10b981; font-weight: bold;">
+            ✓ PASS
+          </span>
+          <span style="color: #334155; margin-left: 6px;">Token is invalidated after logout</span>
+        </div>
+      </td>
+    </tr>
+  
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>
