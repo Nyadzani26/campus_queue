@@ -77,8 +77,15 @@ const StaffDashboard = () => {
 
   const handleServeTicket = async (ticketId) => {
     setModalLoading(true);
+    const targetId = ticketId || nowServing?.id;
+    if (!targetId) {
+      setError('No active ticket ID found.');
+      setModalLoading(false);
+      setShowServeModal(false);
+      return;
+    }
     try {
-      const response = await serveTicket(ticketId);
+      const response = await serveTicket(targetId);
       if (response.ok) {
         setSuccessMessage('Ticket marked as served.');
         setNowServing(null);
@@ -97,8 +104,15 @@ const StaffDashboard = () => {
 
   const handleNoShowTicket = async (ticketId) => {
     setModalLoading(true);
+    const targetId = ticketId || nowServing?.id;
+    if (!targetId) {
+      setError('No active ticket ID found.');
+      setModalLoading(false);
+      setShowMissedModal(false);
+      return;
+    }
     try {
-      const response = await noShowTicket(ticketId);
+      const response = await noShowTicket(targetId);
       if (response.ok) {
         setSuccessMessage('Ticket marked as No-Show.');
         setNowServing(null);

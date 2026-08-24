@@ -186,12 +186,15 @@ class CancelTicketView(APIView):
 
 def _staff_queue_or_error(user):
     """Resolve today's queue for a staff member's department."""
-    if user.department is None:
+    dept = user.department
+    if dept is None and getattr(user, "role", None) == "admin":
+        dept = Department.objects.filter(is_active=True).first()
+    if dept is None:
         return None, Response(
             {"detail": "Your account is not assigned to a department."},
             status=status.HTTP_400_BAD_REQUEST,
         )
-    return Queue.get_or_create_today(user.department), None
+    return Queue.get_or_create_today(dept), None
 
 
 class StaffQueueView(APIView):
@@ -277,7 +280,7 @@ class _StaffTicketActionView(APIView):
     permission_classes = [IsStaffMember]
 
     def get_ticket(self, request, pk):
-        if request.user.department is None:
+        if request.user.department is None and getattr(request.user, "role", None) != "admin":
             return None, Response(
                 {"detail": "Your account is not assigned to a department."},
                 status=status.HTTP_400_BAD_REQUEST,
@@ -288,7 +291,11 @@ class _StaffTicketActionView(APIView):
             return None, Response(
                 {"detail": "Ticket not found."}, status=status.HTTP_404_NOT_FOUND
             )
-        if ticket.queue.department_id != request.user.department_id:
+        if (
+            getattr(request.user, "role", None) != "admin"
+            and request.user.department_id
+            and ticket.queue.department_id != request.user.department_id
+        ):
             return None, Response(
                 {"detail": "This ticket belongs to another department."},
                 status=status.HTTP_403_FORBIDDEN,
