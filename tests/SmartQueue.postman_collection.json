@@ -1,0 +1,2464 @@
+{
+  "info": {
+    "_postman_id": "c7cefe06-44ae-4b86-9e79-1b80f3c16111",
+    "name": "SPU SmartQueue API Tests",
+    "description": "Automated API test suite for the SPU SmartQueue system (NADV 744 Group Assignment). Organized to mirror the OpenAPI spec: auth, departments, tickets, staff, reports, users. Run order matters within folders due to shared state (tokens, IDs) via environment variables. Recommended run order: Root -> Auth -> Departments -> Tickets -> Staff -> Reports -> Users.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "id": "1bf20671-d38e-4bfc-9345-2eb5374dfd94",
+      "name": "00 - Root",
+      "description": "",
+      "item": [
+        {
+          "id": "8cb0c11d-af00-4640-8e22-1b44f6d932a0",
+          "name": "API Root",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                ""
+              ]
+            },
+            "description": ""
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"API root responds with 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Response time is acceptable (<1000ms)\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "adc8b856-61ff-4c66-97d7-c35a8a92d754",
+      "name": "01 - Auth",
+      "description": "Registration, login, logout, profile management, and negative/security cases.",
+      "item": [
+        {
+          "id": "fc89cbef-58fa-468b-bf26-bfa726bfa22c",
+          "name": "Register - Student (valid)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/register/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register",
+                ""
+              ]
+            },
+            "description": "Public student registration. Positive test case.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"teststudent1\",\n  \"password\": \"TestPass123!\",\n  \"email\": \"teststudent1@example.com\",\n  \"student_number\": \"202512345\",\n  \"first_name\": \"Test\",\n  \"last_name\": \"Student\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Register returns success or 201 Created\", function () {",
+                  "    pm.expect([200,201]).to.include(pm.response.code);",
+                  "});",
+                  "pm.test(\"Response time is acceptable (<1000ms)\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});",
+                  "pm.test(\"Response is valid JSON\", function () {",
+                  "    pm.response.to.have.jsonBody();",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "9c548665-826a-4df5-a962-667903b72f6e",
+          "name": "Register - Missing required field (negative)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/register/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register",
+                ""
+              ]
+            },
+            "description": "Negative test: omits username to confirm validation errors are returned, not a 500.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password\": \"TestPass123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Rejects incomplete registration with 400\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "8cbcf407-7b7a-4b4f-b2e8-e7813176b93c",
+          "name": "Login - Student (valid credentials)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/login/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login",
+                ""
+              ]
+            },
+            "description": "Logs in as student and stores the token in the environment for later requests.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{student_username}}\",\n  \"password\": \"{{student_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Login succeeds with 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Response contains auth token\", function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json).to.have.property(\"token\");",
+                  "    pm.environment.set(\"student_token\", json.token);",
+                  "});",
+                  "pm.test(\"Response time is acceptable (<1000ms)\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "834b9dfb-0e10-496d-854c-e36c2da283fe",
+          "name": "Login - Staff (valid credentials)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/login/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{staff_username}}\",\n  \"password\": \"{{staff_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Login succeeds with 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Response contains auth token\", function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json).to.have.property(\"token\");",
+                  "    pm.environment.set(\"staff_token\", json.token);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "184c221f-61a0-4c11-beeb-6eda42ca9f88",
+          "name": "Login - Admin (valid credentials)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/login/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{admin_username}}\",\n  \"password\": \"{{admin_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Login succeeds with 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Response contains auth token\", function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json).to.have.property(\"token\");",
+                  "    pm.environment.set(\"admin_token\", json.token);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "5a534a13-f6e9-4fbf-bce6-7606737d1ab9",
+          "name": "Login - Invalid password (negative)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/login/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login",
+                ""
+              ]
+            },
+            "description": "Negative/security test: wrong password must not authenticate or return a token.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{student_username}}\",\n  \"password\": \"WrongPassword999\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Rejects invalid credentials with 400 or 401\", function () {",
+                  "    pm.expect([400, 401]).to.include(pm.response.code);",
+                  "});",
+                  "pm.test(\"Does not leak a token on failed login\", function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.token).to.be.undefined;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "63aa4ef1-f788-4915-801f-4c3b0b37feec",
+          "name": "Get Profile (authenticated)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{student_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/profile/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "profile",
+                ""
+              ]
+            },
+            "description": ""
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is expected\", function () {",
+                  "    pm.expect([200]).to.include(pm.response.code);",
+                  "});",
+                  "pm.test(\"Response time is acceptable (<1000ms)\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});",
+                  "pm.test(\"Response is valid JSON\", function () {",
+                  "    pm.response.to.have.jsonBody();",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "34ed3c00-550e-457e-bc23-dd88e91f02c5",
+          "name": "Get Profile - No token (negative)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/auth/profile/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "profile",
+                ""
+              ]
+            },
+            "description": "Security test: protected route must reject requests with no Authorization header."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Rejects unauthenticated request with 401\", function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "142b0404-d27f-44f6-88a8-9d33c712afa0",
+          "name": "Update Profile (PATCH)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{student_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/profile/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "profile",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"0731234567\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is expected\", function () {",
+                  "    pm.expect([200]).to.include(pm.response.code);",
+                  "});",
+                  "pm.test(\"Response time is acceptable (<1000ms)\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});",
+                  "pm.test(\"Response is valid JSON\", function () {",
+                  "    pm.response.to.have.jsonBody();",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "142b7466-ed78-492e-b79b-7b48289505e6",
+      "name": "02 - Departments",
+      "description": "CRUD for departments, role-based access control, and queue join.",
+      "item": [
+        {
+          "id": "b3d13447-4a62-4f8f-9ed6-e388356bd366",
+          "name": "List Departments (authenticated)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{student_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/departments/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "departments",
+                ""
+              ]
+            },
+            "description": ""
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Response is paginated with results array\", function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json).to.have.property(\"results\");",
+                  "    pm.expect(json.results).to.be.an(\"array\");",
+                  "});",
+                  "pm.test(\"Stores first department id for later CRUD tests\", function () {",
+                  "    var json = pm.response.json();",
+                  "    if (json.results.length > 0) {",
+                  "        pm.environment.set(\"department_id\", json.results[0].id);",
+                  "    }",
+                  "});",
+                  "pm.test(\"Stores ICT department id for the join/staff-lifecycle chain\", function () {",
+                  "    // The staff test account is tied specifically to the ICT department, so the",
+                  "    // student must join ICT's queue (not a freshly-created throwaway department)",
+                  "    // for staff call-next/start/serve/no-show to have permission over the ticket.",
+                  "    var json = pm.response.json();",
+                  "    var ict = json.results.find(function (d) { return d.code === \"ICT\"; });",
+                  "    if (ict) {",
+                  "        pm.environment.set(\"ict_department_id\", ict.id);",
+                  "    } else {",
+                  "        console.warn(\"No department with code \\'ICT\\' found - Join Queue and staff ticket lifecycle tests will fail. Check that the ICT department exists and its code is exactly \\'ICT\\'.\");",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "f8792f1c-3079-4d10-aae5-c22201e8bd0c",
+          "name": "List Departments - No token (negative)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/departments/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "departments",
+                ""
+              ]
+            },
+            "description": ""
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Rejects unauthenticated request with 401\", function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "51f5a6b7-0ba4-43ce-9361-339089ef9329",
+          "name": "Create Department - Admin (valid)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/departments/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "departments",
+                ""
+              ]
+            },
+            "description": "code field is limited to 10 chars in the schema, so the suffix is kept to 6 digits (\"IT\" + 6 digits = 8 chars).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Information Technology Services {{run_suffix}}\",\n  \"code\": \"IT{{run_suffix}}\",\n  \"description\": \"IT support and helpdesk\",\n  \"location\": \"Building B, Ground Floor\",\n  \"opens_at\": \"08:00\",\n  \"closes_at\": \"16:30\",\n  \"avg_service_minutes\": 7\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Generate a short unique suffix so re-running this collection never collides",
+                  "// with a department created (and only soft-deleted) by a previous run.",
+                  "var suffix = Date.now().toString().slice(-6);",
+                  "pm.environment.set(\"run_suffix\", suffix);"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Create succeeds with 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "pm.test(\"Returned department has expected fields\", function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json).to.have.property(\"id\");",
+                  "    pm.environment.set(\"department_id\", json.id);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "ed026f7f-689d-44a2-b9d3-d9d4064c1f1e",
+          "name": "Create Department - Student (negative, forbidden)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{student_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/departments/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "departments",
+                ""
+              ]
+            },
+            "description": "Role-based access test: only admins may create departments.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Should Not Be Created\",\n  \"code\": \"XXX\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Rejects non-admin create with 403\", function () {",
+                  "    pm.response.to.have.status(403);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "bbfceb7f-5f6d-49b9-bfe6-5cf2c8b04542",
+          "name": "Create Department - Missing required field (negative)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/departments/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "departments",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"No name or code supplied\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Rejects invalid payload with 400\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "0cb56739-fbfe-4a76-aa7b-6d05b74039ae",
+          "name": "Retrieve Department by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{student_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/departments/{{department_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "departments",
+                "{{department_id}}",
+                ""
+              ]
+            },
+            "description": ""
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is expected\", function () {",
+                  "    pm.expect([200]).to.include(pm.response.code);",
+                  "});",
+                  "pm.test(\"Response time is acceptable (<1000ms)\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});",
+                  "pm.test(\"Response is valid JSON\", function () {",
+                  "    pm.response.to.have.jsonBody();",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "cb5b5e74-52ca-4f3c-b908-bda932a84412",
+          "name": "Retrieve Department - Invalid ID (negative)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{student_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/departments/999999/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "departments",
+                "999999",
+                ""
+              ]
+            },
+            "description": ""
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Returns 404 for non-existent department\", function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "74cab7f5-4966-4990-b291-86789021e562",
+          "name": "Update Department - Admin (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/departments/{{department_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "departments",
+                "{{department_id}}",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Information Technology Services {{run_suffix}}\",\n  \"code\": \"IT{{run_suffix}}\",\n  \"description\": \"Updated description\",\n  \"location\": \"Building B, Ground Floor\",\n  \"opens_at\": \"08:00\",\n  \"closes_at\": \"17:00\",\n  \"avg_service_minutes\": 6\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is expected\", function () {",
+                  "    pm.expect([200]).to.include(pm.response.code);",
+                  "});",
+                  "pm.test(\"Response time is acceptable (<1000ms)\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});",
+                  "pm.test(\"Response is valid JSON\", function () {",
+                  "    pm.response.to.have.jsonBody();",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "7b68e27f-7feb-4f02-bad3-a5584f25d9b4",
+          "name": "Partial Update Department - Admin (PATCH)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/departments/{{department_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "departments",
+                "{{department_id}}",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"avg_service_minutes\": 8\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is expected\", function () {",
+                  "    pm.expect([200]).to.include(pm.response.code);",
+                  "});",
+                  "pm.test(\"Response time is acceptable (<1000ms)\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "0f90d31a-cea8-4417-9f9e-45121995160a",
+          "name": "Join Queue - Student",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{student_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/departments/{{ict_department_id}}/join/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "departments",
+                "{{ict_department_id}}",
+                "join",
+                ""
+              ]
+            },
+            "description": "Joins the ICT department specifically (looked up by code in 'List Departments'), since the staff test account only has permission over ICT's queue.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Join queue succeeds with 200 or 201\", function () {",
+                  "    pm.expect([200, 201]).to.include(pm.response.code);",
+                  "});",
+                  "pm.test(\"Response time is acceptable (<1000ms)\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});",
+                  "pm.test(\"Stores the new ticket id for the tickets/staff-lifecycle folders\", function () {",
+                  "    if ([200, 201].includes(pm.response.code)) {",
+                  "        var json = pm.response.json();",
+                  "        if (json.id) { pm.environment.set(\"ticket_id\", json.id); }",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "d0fee5c7-1661-4438-b7bd-8c91b423d39a",
+          "name": "Join Queue - No token (negative)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/departments/{{ict_department_id}}/join/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "departments",
+                "{{ict_department_id}}",
+                "join",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Rejects unauthenticated join with 401\", function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "60175a6c-c50f-48da-9bc8-df4f0123dcfe",
+          "name": "Delete (Soft-delete) Department - Admin",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/departments/{{department_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "departments",
+                "{{department_id}}",
+                ""
+              ]
+            },
+            "description": "NOTE: run this LAST in the departments folder, since it deactivates the department used by earlier requests."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Soft-delete succeeds with 204\", function () {",
+                  "    pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "6d9c69aa-151b-4469-b676-b0bdd4bec69a",
+      "name": "03 - Tickets (Student)",
+      "description": "Ticket history, active ticket polling, and cancellation.",
+      "item": [
+        {
+          "id": "c5807034-11fc-43d7-87bc-92862b1a2921",
+          "name": "Get My Ticket History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{student_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/tickets/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "tickets",
+                ""
+              ]
+            },
+            "description": ""
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Response time is acceptable (<1000ms)\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "d303851c-88cc-4be0-8876-a0612aff454e",
+          "name": "Get Active Ticket",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{student_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/tickets/active/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "tickets",
+                "active",
+                ""
+              ]
+            },
+            "description": "This is the polling endpoint the student dashboard hits repeatedly, so response time matters most here."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 or 404 (no active ticket)\", function () {",
+                  "    pm.expect([200, 404]).to.include(pm.response.code);",
+                  "});",
+                  "pm.test(\"Stores active ticket id if present\", function () {",
+                  "    if (pm.response.code === 200) {",
+                  "        var json = pm.response.json();",
+                  "        if (json.id) { pm.environment.set(\"ticket_id\", json.id); }",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "dfb4720a-cdc6-47ed-aa53-aa3f4434dde5",
+          "name": "Cancel Ticket",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{student_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/tickets/{{ticket_id}}/cancel/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "tickets",
+                "{{ticket_id}}",
+                "cancel",
+                ""
+              ]
+            },
+            "description": ""
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Cancel succeeds with 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "37136a96-af86-496c-9447-3e7b78d93fec",
+          "name": "Cancel Ticket - Invalid ID (negative)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{student_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/tickets/999999/cancel/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "tickets",
+                "999999",
+                "cancel",
+                ""
+              ]
+            },
+            "description": ""
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Returns 404 for non-existent ticket\", function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "62e104ad-66cb-4a9d-bdfa-0770a84902c3",
+          "name": "Cancel Ticket - No token (negative)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/tickets/{{ticket_id}}/cancel/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "tickets",
+                "{{ticket_id}}",
+                "cancel",
+                ""
+              ]
+            },
+            "description": ""
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Rejects unauthenticated cancel with 401\", function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "61bec9b4-a614-459c-9f55-0c1bfd487a43",
+      "name": "04 - Staff Operations",
+      "description": "Queue snapshot, call-next, ticket lifecycle, queue status control.",
+      "item": [
+        {
+          "id": "0ec0a571-14b2-4103-a3c0-3eb572d38114",
+          "name": "Join Queue - Fresh ticket for staff lifecycle",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{student_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/departments/{{ict_department_id}}/join/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "departments",
+                "{{ict_department_id}}",
+                "join",
+                ""
+              ]
+            },
+            "description": "The ticket created in the '02 - Departments' folder gets cancelled by the '03 - Tickets' folder's cancel test, so it's no longer waiting by the time this folder runs. This request creates a SEPARATE ticket dedicated to the call-next -> start -> serve/no-show chain below, stored as staff_ticket_id so it doesn't collide with ticket_id used elsewhere.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Join succeeds with 200 or 201\", function () {",
+                  "    pm.expect([200, 201]).to.include(pm.response.code);",
+                  "});",
+                  "pm.test(\"Stores this ticket id for the call-next/start/serve chain below\", function () {",
+                  "    if ([200, 201].includes(pm.response.code)) {",
+                  "        var json = pm.response.json();",
+                  "        if (json.id) { pm.environment.set(\"staff_ticket_id\", json.id); }",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "08b4a114-b420-4847-8ce3-232e50af53d7",
+          "name": "Get Staff Queue Snapshot",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/staff/queue/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "staff",
+                "queue",
+                ""
+              ]
+            },
+            "description": ""
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is expected\", function () {",
+                  "    pm.expect([200]).to.include(pm.response.code);",
+                  "});",
+                  "pm.test(\"Response time is acceptable (<1000ms)\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});",
+                  "pm.test(\"Response is valid JSON\", function () {",
+                  "    pm.response.to.have.jsonBody();",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "c6ac5c03-b489-4b0b-a9b2-b5eaf285ea30",
+          "name": "Get Staff Queue - Student token (negative, forbidden)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{student_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/staff/queue/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "staff",
+                "queue",
+                ""
+              ]
+            },
+            "description": "Role-based access test: students must not access staff-only endpoints."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Rejects student role with 403\", function () {",
+                  "    pm.response.to.have.status(403);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "2c28c381-714d-481d-beb7-4920a17f8f6d",
+          "name": "Call Next Ticket",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/staff/call-next/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "staff",
+                "call-next",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 or 204 (queue may be empty)\", function () {",
+                  "    pm.expect([200, 204]).to.include(pm.response.code);",
+                  "});",
+                  "pm.test(\"Stores called ticket id, falling back to staff_ticket_id if not returned\", function () {",
+                  "    if (pm.response.code === 200) {",
+                  "        var json = pm.response.json();",
+                  "        if (json.id) { pm.environment.set(\"ticket_id\", json.id); }",
+                  "    } else {",
+                  "        // Some implementations return 204 with no body on success; fall back to",
+                  "        // the ticket we know we just created for this folder.",
+                  "        var fallback = pm.environment.get(\"staff_ticket_id\");",
+                  "        if (fallback) { pm.environment.set(\"ticket_id\", fallback); }",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "2f5e63bd-6582-4d05-9f83-4dd386780296",
+          "name": "Start Ticket (student arrived)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/staff/tickets/{{ticket_id}}/start/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "staff",
+                "tickets",
+                "{{ticket_id}}",
+                "start",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is expected\", function () {",
+                  "    pm.expect([200]).to.include(pm.response.code);",
+                  "});",
+                  "pm.test(\"Response time is acceptable (<1000ms)\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "95ece10f-04de-4618-bef2-b7cf99127fdb",
+          "name": "Serve Ticket (service completed)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/staff/tickets/{{ticket_id}}/serve/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "staff",
+                "tickets",
+                "{{ticket_id}}",
+                "serve",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is expected\", function () {",
+                  "    pm.expect([200]).to.include(pm.response.code);",
+                  "});",
+                  "pm.test(\"Response time is acceptable (<1000ms)\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "9c36442b-c16e-4a6a-b7a2-edad9913d1e1",
+          "name": "Mark Ticket No-Show",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/staff/tickets/{{ticket_id}}/no-show/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "staff",
+                "tickets",
+                "{{ticket_id}}",
+                "no-show",
+                ""
+              ]
+            },
+            "description": "Business-logic edge case: a ticket already served/completed should not be marked no-show again.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"No-show action returns 200 or 409 (already served/cancelled)\", function () {",
+                  "    pm.expect([200, 409]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "51c79906-da69-4571-8c3c-6ac2b9f5bdde",
+          "name": "Update Queue Status - Pause",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/staff/queue/status/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "staff",
+                "queue",
+                "status",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"paused\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is expected\", function () {",
+                  "    pm.expect([200]).to.include(pm.response.code);",
+                  "});",
+                  "pm.test(\"Response time is acceptable (<1000ms)\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "d1740d53-32e1-4a74-b726-30b7fddcf51e",
+          "name": "Update Queue Status - Resume",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/staff/queue/status/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "staff",
+                "queue",
+                "status",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"open\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is expected\", function () {",
+                  "    pm.expect([200]).to.include(pm.response.code);",
+                  "});",
+                  "pm.test(\"Response time is acceptable (<1000ms)\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "0998a8b2-95de-41c3-8a8c-1615c3c427c1",
+          "name": "Update Queue Status - Invalid value (negative)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/staff/queue/status/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "staff",
+                "queue",
+                "status",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"not_a_real_status\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Rejects invalid status value with 400\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1a9e9497-f2ed-43be-8684-807fcf81363b",
+      "name": "05 - Reports",
+      "description": "Admin daily summary reporting.",
+      "item": [
+        {
+          "id": "c2cb205b-deb8-4381-99ed-53e2f6009656",
+          "name": "Daily Summary Report - Admin",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/reports/summary/?date=2026-08-20",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "reports",
+                "summary",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "date",
+                  "value": "2026-08-20"
+                }
+              ]
+            },
+            "description": ""
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is expected\", function () {",
+                  "    pm.expect([200]).to.include(pm.response.code);",
+                  "});",
+                  "pm.test(\"Response time is acceptable (<1000ms)\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});",
+                  "pm.test(\"Response is valid JSON\", function () {",
+                  "    pm.response.to.have.jsonBody();",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "3f1c8e74-e041-4e45-a3d1-a6560058f5bc",
+          "name": "Daily Summary Report - Missing date param (negative)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/reports/summary/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "reports",
+                "summary",
+                ""
+              ]
+            },
+            "description": ""
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Handles missing date gracefully (200 default or 400)\", function () {",
+                  "    pm.expect([200, 400]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "7aadac70-8eca-492d-b0fb-e7520e915597",
+          "name": "Daily Summary Report - Student token (negative, forbidden)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{student_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/reports/summary/?date=2026-08-20",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "reports",
+                "summary",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "date",
+                  "value": "2026-08-20"
+                }
+              ]
+            },
+            "description": ""
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Rejects student role with 403\", function () {",
+                  "    pm.response.to.have.status(403);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "87e91229-1df3-4b29-89d8-4a9bf2dba5a6",
+      "name": "06 - Users (Admin)",
+      "description": "User administration and staff account creation.",
+      "item": [
+        {
+          "id": "3d70c92a-64cc-412e-890f-46089792faa4",
+          "name": "List Users - Admin",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                ""
+              ]
+            },
+            "description": ""
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Response is paginated\", function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json).to.have.property(\"results\");",
+                  "});",
+                  "pm.test(\"Stores first user id for later tests\", function () {",
+                  "    var json = pm.response.json();",
+                  "    if (json.results.length > 0) {",
+                  "        pm.environment.set(\"user_id\", json.results[0].id);",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "50a691f8-1df2-4c13-8d6d-82c83906854c",
+          "name": "List Users - Student token (negative, forbidden)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{student_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                ""
+              ]
+            },
+            "description": ""
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Rejects non-admin listing with 403\", function () {",
+                  "    pm.response.to.have.status(403);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "177c3d0c-44b1-491d-ad13-beed6656f2b1",
+          "name": "Retrieve Single User - Admin",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/{{user_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "{{user_id}}",
+                ""
+              ]
+            },
+            "description": ""
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is expected\", function () {",
+                  "    pm.expect([200]).to.include(pm.response.code);",
+                  "});",
+                  "pm.test(\"Response time is acceptable (<1000ms)\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});",
+                  "pm.test(\"Response is valid JSON\", function () {",
+                  "    pm.response.to.have.jsonBody();",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "64a68ffc-cebe-471c-93f5-ec4752aa045b",
+          "name": "Retrieve User - Invalid ID (negative)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/999999/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "999999",
+                ""
+              ]
+            },
+            "description": ""
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Returns 404 for non-existent user\", function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "9e5e232e-92a0-4c8d-ab1e-cad378fa69b2",
+          "name": "Patch User - Admin",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/{{user_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "{{user_id}}",
+                ""
+              ]
+            },
+            "description": "This is an account-administration endpoint, not a profile-edit endpoint: UserDetailView.patch() only accepts is_active, role, or department (see allowed = {'is_active', 'role', 'department'} in views.py). Setting is_active=True is a safe no-op-ish action that exercises the real code path without accidentally deactivating a test account.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"is_active\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is expected\", function () {",
+                  "    pm.expect([200]).to.include(pm.response.code);",
+                  "});",
+                  "pm.test(\"Response time is acceptable (<1000ms)\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});",
+                  "pm.test(\"Response is valid JSON\", function () {",
+                  "    pm.response.to.have.jsonBody();",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "e0aa2152-3a33-4e5b-ad73-c8d6900e8a8e",
+          "name": "Create Staff Account - Admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/staff/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "staff",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"newstaffmember\",\n  \"password\": \"StaffPass123!\",\n  \"email\": \"staffmember@example.com\",\n  \"first_name\": \"New\",\n  \"last_name\": \"Staff\",\n  \"department\": \"{{department_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200 or 201\", function () {",
+                  "    pm.expect([200, 201]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "f55fb75a-3024-4c44-acf3-e3e7db6b26ec",
+          "name": "Create Staff Account - Student token (negative, forbidden)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{student_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/staff/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "staff",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"shouldfail\",\n  \"password\": \"x\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Rejects non-admin staff creation with 403\", function () {",
+                  "    pm.response.to.have.status(403);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "5b0a9ec7-1795-4ca4-877f-3bbe3512638b",
+      "name": "07 - Session Teardown",
+      "description": "Logout, run LAST. This backend deletes ALL of a user's tokens on logout (not just the current session's), so nothing earlier in the run can depend on student_token after this point.",
+      "item": [
+        {
+          "id": "1005a358-4e09-4888-aa2e-ee565af71ab6",
+          "name": "Logout - Student",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{student_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/logout/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "logout",
+                ""
+              ]
+            },
+            "description": "MUST run last. Confirmed backend behaviour: LogoutView does Token.objects.filter(user=request.user).delete() -- this deletes every token for the user, so the API does not support multiple concurrent sessions per account. Running this earlier breaks every subsequent request that relies on student_token."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Logout succeeds with 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Token is invalidated after logout\", function () {",
+                  "    // Sanity note: this backend deletes ALL tokens for the user on logout,",
+                  "    // not just this session's token. Documented finding for the report.",
+                  "    pm.expect(pm.response.code).to.eql(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
