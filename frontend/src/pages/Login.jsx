@@ -21,219 +21,106 @@ const Login = () => {
       const response = await login(username, password);
       const data = await response.json();
 
-      // 🔥 LOG EVERYTHING
-      console.log('===== LOGIN RESPONSE =====');
-      console.log('Full response:', data);
-      console.log('Token:', data.token);
-      console.log('User object:', data.user);
-      console.log('All user fields:', Object.keys(data.user || {}));
-      console.log('is_superuser:', data.user?.is_superuser);
-      console.log('is_staff:', data.user?.is_staff);
-      console.log('role:', data.user?.role);
-      console.log('department:', data.user?.department);
-      console.log('===========================');
-
       if (response.ok) {
         loginUser(data.token, data.user);
         setMessage('✅ Login successful!');
         
-        // 🔥 SIMPLIFIED CHECKS
         const isSuperuser = data.user?.is_superuser === true;
         const isStaff = data.user?.is_staff === true || data.user?.role === 'Staff' || data.user?.role === 'staff';
         
-        console.log('Is superuser?', isSuperuser);
-        console.log('Is staff?', isStaff);
-        
         setTimeout(() => {
           if (isSuperuser) {
-            console.log('🔴 REDIRECTING TO: /admin-dashboard');
             navigate('/admin-dashboard');
           } else if (isStaff) {
-            console.log('🔵 REDIRECTING TO: /staff-dashboard');
             navigate('/staff-dashboard');
           } else {
-            console.log('🟢 REDIRECTING TO: /dashboard');
             navigate('/dashboard');
           }
-        }, 500);
+        }, 400);
       } else {
-        setMessage(`❌ ${data.error || 'Invalid credentials'}`);
+        setMessage(`❌ ${data.detail || data.error || 'Invalid username or password'}`);
       }
     } catch (error) {
-      setMessage('❌ Network error: Could not connect to the server');
-      console.error('Login error:', error);
+      setMessage('❌ Network error: Could not connect to backend server');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.card}>
-        <div style={styles.header}>
-          <h1 style={styles.logo}>SQ</h1>
-          <h2 style={styles.title}>SmartQueue</h2>
-          <p style={styles.subtitle}>Skip the line. Not the service.</p>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'linear-gradient(135deg, #001a33 0%, #003366 100%)', color: '#fff' }}>
+      {/* Top Header Bar */}
+      <header className="spu-header" style={{ background: 'transparent', boxShadow: 'none' }}>
+        <div className="spu-header-container">
+          <div className="spu-brand" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
+            <div className="spu-logo-badge">SPU</div>
+            <div className="spu-title-group">
+              <span className="spu-brand-title">Sol Plaatje University</span>
+              <span className="spu-brand-sub">Smart Queue Management</span>
+            </div>
+          </div>
+          <Link to="/" className="nav-link">← Back to Landing Page</Link>
         </div>
+      </header>
 
-        <form onSubmit={handleLogin} style={styles.form}>
-          <div style={styles.inputGroup}>
-            <label style={styles.label}>Username</label>
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              style={styles.input}
-              placeholder="Your username"
-              required
-              disabled={loading}
-            />
+      {/* Main Login Card Wrapper */}
+      <main style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '2rem 1.5rem' }}>
+        <div className="card" style={{ width: '100%', maxWidth: '440px', padding: '2.5rem', background: '#ffffff', color: '#1e293b', borderRadius: '16px', boxShadow: '0 20px 40px rgba(0,0,0,0.3)' }}>
+          <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+            <div style={{ display: 'inline-block', background: '#ffb800', color: '#001a33', fontWeight: 900, padding: '8px 16px', borderRadius: '10px', fontSize: '1.4rem', letterSpacing: '1px', marginBottom: '12px' }}>SPU</div>
+            <h2 style={{ fontSize: '1.8rem', color: '#003366', fontWeight: 800 }}>Account Sign In</h2>
+            <p style={{ color: '#64748b', fontSize: '0.92rem', marginTop: '4px' }}>Access your student or staff queue portal</p>
           </div>
-
-          <div style={styles.inputGroup}>
-            <label style={styles.label}>Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              style={styles.input}
-              placeholder="Your password"
-              required
-              disabled={loading}
-            />
-          </div>
-
-          <button type="submit" style={styles.button} disabled={loading}>
-            {loading ? 'Signing in...' : 'Sign in'}
-          </button>
 
           {message && (
-            <p style={message.includes('✅') ? styles.success : styles.error}>
+            <div style={{ background: message.includes('✅') ? '#ecfdf5' : '#fef2f2', border: `1px solid ${message.includes('✅') ? '#a7f3d0' : '#fecaca'}`, color: message.includes('✅') ? '#065f46' : '#991b1b', padding: '10px 14px', borderRadius: '8px', marginBottom: '1.2rem', fontSize: '0.9rem', fontWeight: 600 }}>
               {message}
-            </p>
+            </div>
           )}
-        </form>
 
-        <p style={styles.footer}>
-          Don't have an account? <Link to="/register" style={styles.link}>Register</Link>
-        </p>
+          <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+            <div>
+              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#1e293b', marginBottom: '6px' }}>Username</label>
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Enter your username"
+                required
+                disabled={loading}
+                style={{ width: '100%', padding: '12px 14px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.98rem', fontFamily: 'inherit', boxSizing: 'border-box' }}
+              />
+            </div>
 
-        <div style={styles.features}>
-          <p>• Join queues from anywhere on campus</p>
-          <p>• Real-time position and wait estimates</p>
-          <p>• Five departments, one platform</p>
+            <div>
+              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#1e293b', marginBottom: '6px' }}>Password</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+                required
+                disabled={loading}
+                style={{ width: '100%', padding: '12px 14px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.98rem', fontFamily: 'inherit', boxSizing: 'border-box' }}
+              />
+            </div>
+
+            <button type="submit" disabled={loading} className="btn-primary" style={{ padding: '14px', fontSize: '1.05rem', marginTop: '6px' }}>
+              {loading ? 'Authenticating...' : 'Sign In →'}
+            </button>
+          </form>
+
+          <div style={{ marginTop: '2rem', textAlign: 'center', borderTop: '1px solid #e2e8f0', paddingTop: '1.5rem', fontSize: '0.92rem', color: '#64748b' }}>
+            Don't have a student account? <Link to="/register" style={{ color: '#0066cc', fontWeight: 700, textDecoration: 'none' }}>Register Here</Link>
+          </div>
         </div>
+      </main>
 
-        <p style={styles.university}>SOL PLAATJE UNIVERSITY • KIMBERLEY</p>
-      </div>
+      <footer style={{ textAlign: 'center', padding: '1.5rem', fontSize: '0.82rem', color: 'rgba(255,255,255,0.6)' }}>
+        © {new Date().getFullYear()} Sol Plaatje University • Smart Queue System
+      </footer>
     </div>
   );
-};
-
-const styles = {
-  container: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    minHeight: '100vh',
-    backgroundColor: '#f0f2f5',
-    fontFamily: 'Arial, sans-serif',
-  },
-  card: {
-    backgroundColor: 'white',
-    padding: '40px',
-    borderRadius: '8px',
-    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-    width: '100%',
-    maxWidth: '420px',
-  },
-  header: {
-    textAlign: 'center',
-    marginBottom: '30px',
-  },
-  logo: {
-    color: '#1a73e8',
-    fontSize: '36px',
-    margin: '0',
-  },
-  title: {
-    color: '#333',
-    margin: '5px 0',
-  },
-  subtitle: {
-    color: '#666',
-    margin: '5px 0 0 0',
-    fontStyle: 'italic',
-  },
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  inputGroup: {
-    marginBottom: '15px',
-  },
-  label: {
-    display: 'block',
-    marginBottom: '5px',
-    fontWeight: 'bold',
-    color: '#555',
-    fontSize: '14px',
-  },
-  input: {
-    width: '100%',
-    padding: '10px',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
-    fontSize: '16px',
-    boxSizing: 'border-box',
-  },
-  button: {
-    padding: '12px',
-    backgroundColor: '#1a73e8',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    fontSize: '16px',
-    fontWeight: 'bold',
-    cursor: 'pointer',
-    marginTop: '10px',
-  },
-  success: {
-    color: 'green',
-    textAlign: 'center',
-    marginTop: '15px',
-    marginBottom: '0',
-  },
-  error: {
-    color: 'red',
-    textAlign: 'center',
-    marginTop: '15px',
-    marginBottom: '0',
-  },
-  footer: {
-    textAlign: 'center',
-    marginTop: '20px',
-    color: '#666',
-  },
-  link: {
-    color: '#1a73e8',
-    textDecoration: 'none',
-    fontWeight: 'bold',
-  },
-  features: {
-    marginTop: '20px',
-    padding: '15px',
-    backgroundColor: '#f8f9fa',
-    borderRadius: '4px',
-    color: '#555',
-    fontSize: '14px',
-  },
-  university: {
-    textAlign: 'center',
-    marginTop: '20px',
-    fontSize: '12px',
-    color: '#888',
-  },
 };
 
 export default Login;
