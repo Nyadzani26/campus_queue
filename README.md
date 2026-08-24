@@ -178,17 +178,22 @@ A PowerShell setup script is included to automate environment setup, dependency 
 
 ---
 
-## Running the Server (Uvicorn ASGI)
+## Running the Application
 
-Start the development server using **Uvicorn**:
-
+### 1. Start the Backend API (Uvicorn ASGI)
 ```bash
 uvicorn --app-dir backend smartqueue.asgi:application --reload --port 8000
 ```
+*(Runs Django REST API & Swagger UI at **`http://127.0.0.1:8000`**)*
 
-*(Alternatively, run with Django's built-in server: `python backend/manage.py runserver`)*
-
-Open your browser at **`http://127.0.0.1:8000`**.
+### 2. Start the React Frontend (Vite)
+Open a second terminal:
+```bash
+cd frontend
+npm install
+npm run dev
+```
+*(Runs React Frontend UI at **`http://localhost:3000`**)*
 
 ---
 
