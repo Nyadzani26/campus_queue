@@ -3,6 +3,17 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getDepartments } from '../api';
+import { 
+  Clock, 
+  MapPin, 
+  Users, 
+  CheckCircle2, 
+  ArrowRight, 
+  Building2, 
+  ShieldCheck,
+  User,
+  LogOut
+} from 'lucide-react';
 
 const LandingPage = () => {
   const { user, logoutUser } = useAuth();
@@ -70,9 +81,13 @@ const LandingPage = () => {
             <a href="#about" className="nav-link">About SPU</a>
             {user ? (
               <div className="user-auth-pill">
-                <span className="user-greeting">Logged in as <strong>{user.first_name || user.username}</strong></span>
+                <span className="user-greeting" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <User size={16} /> Logged in as <strong>{user.first_name || user.username}</strong>
+                </span>
                 <button onClick={handleDashboardRedirect} className="btn-dash">Dashboard</button>
-                <button onClick={logoutUser} className="btn-logout-sm">Logout</button>
+                <button onClick={logoutUser} className="btn-logout-sm" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <LogOut size={14} /> Logout
+                </button>
               </div>
             ) : (
               <div className="auth-buttons">
@@ -88,19 +103,23 @@ const LandingPage = () => {
       <section className="spu-hero">
         <div className="spu-hero-content">
           <div className="hero-text-block">
-            <span className="hero-tag">Sol Plaatje University Student Services</span>
+            <span className="hero-tag" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+              <Building2 size={14} /> Sol Plaatje University Student Services
+            </span>
             <h1>Virtual Queue Management</h1>
             <p>
               Join department service queues online from anywhere on campus, track your estimated wait time in real-time, and receive updates when staff are ready to assist you.
             </p>
             <div className="hero-cta-group">
               {user ? (
-                <button onClick={handleDashboardRedirect} className="btn-hero-primary">
-                  Go to Student Dashboard
+                <button onClick={handleDashboardRedirect} className="btn-hero-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                  Go to Student Dashboard <ArrowRight size={18} />
                 </button>
               ) : (
                 <>
-                  <Link to="/register" className="btn-hero-primary">Register Account</Link>
+                  <Link to="/register" className="btn-hero-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                    Register Account <ArrowRight size={18} />
+                  </Link>
                   <Link to="/login" className="btn-hero-secondary">Sign In</Link>
                 </>
               )}
@@ -115,6 +134,7 @@ const LandingPage = () => {
                 className="hero-img"
               />
               <div className="hero-badge-float">
+                <span className="pulse-dot"></span>
                 <span>{departments.length || 5} Departments Active</span>
               </div>
             </div>
@@ -174,8 +194,12 @@ const LandingPage = () => {
                   <p className="dept-desc">{dept.description || 'Assisting students with university inquiries and support.'}</p>
                   
                   <div className="dept-meta">
-                    <div>Location: {dept.location || 'Central Campus'}</div>
-                    <div>Hours: {dept.opens_at ? dept.opens_at.slice(0,5) : '08:00'} - {dept.closes_at ? dept.closes_at.slice(0,5) : '16:00'}</div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <MapPin size={15} color="#64748b" /> Location: {dept.location || 'Central Campus'}
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <Clock size={15} color="#64748b" /> Hours: {dept.opens_at ? dept.opens_at.slice(0,5) : '08:00'} - {dept.closes_at ? dept.closes_at.slice(0,5) : '16:00'}
+                    </div>
                   </div>
 
                   <div className="dept-stats-row">
@@ -191,9 +215,13 @@ const LandingPage = () => {
 
                   <div className="card-footer">
                     {user ? (
-                      <Link to="/dashboard" className="btn-join-dept">Join Queue</Link>
+                      <Link to="/dashboard" className="btn-join-dept" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                        Join Queue <ArrowRight size={16} />
+                      </Link>
                     ) : (
-                      <Link to="/login" className="btn-join-dept">Sign In to Join</Link>
+                      <Link to="/login" className="btn-join-dept" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                        Sign In to Join <ArrowRight size={16} />
+                      </Link>
                     )}
                   </div>
                 </div>
@@ -240,9 +268,15 @@ const LandingPage = () => {
               Sol Plaatje University provides centralized student administration services across campuses in Kimberley, Northern Cape.
             </p>
             <ul className="about-list">
-              <li>Integrated digital student queue management</li>
-              <li>Support for Financial Aid, NSFAS, ICT Helpdesk, and Registration</li>
-              <li>Real-time counter dispatching for staff</li>
+              <li style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <CheckCircle2 size={18} color="#0066cc" /> Integrated digital student queue management
+              </li>
+              <li style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <CheckCircle2 size={18} color="#0066cc" /> Support for Financial Aid, NSFAS, ICT Helpdesk, and Registration
+              </li>
+              <li style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <CheckCircle2 size={18} color="#0066cc" /> Real-time counter dispatching for staff
+              </li>
             </ul>
           </div>
           <div className="about-gallery">
