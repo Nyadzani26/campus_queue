@@ -1,0 +1,1762 @@
+{
+	"id": "babd9bce-1d64-4f8a-b5a3-bc1e5c83d53d",
+	"name": "SPU SmartQueue API Tests",
+	"timestamp": "2026-08-24T12:00:56.810Z",
+	"collection_id": "52465860-3ce70ce9-0253-4850-aea4-4b74add270bf",
+	"folder_id": 0,
+	"environment_id": "52465860-66918131-86ac-4e0a-acb8-1885d1d2e519",
+	"totalPass": 83,
+	"delay": 0,
+	"persist": true,
+	"status": "finished",
+	"startedAt": "2026-08-24T12:00:46.061Z",
+	"totalFail": 7,
+	"results": [
+		{
+			"id": "5eafbece-97d0-4cce-acf4-939362504868",
+			"name": "API Root",
+			"url": "http://localhost:8000/api/",
+			"time": 65,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {
+				"API root responds with 200": false,
+				"Response time is acceptable (<1000ms)": true
+			},
+			"testPassFailCounts": {
+				"API root responds with 200": {
+					"pass": 0,
+					"fail": 1
+				},
+				"Response time is acceptable (<1000ms)": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				65
+			],
+			"allTests": [
+				{
+					"API root responds with 200": false,
+					"Response time is acceptable (<1000ms)": true
+				}
+			]
+		},
+		{
+			"id": "5d2d4c30-6c43-42fe-b7e7-3ac530fc8098",
+			"name": "Register - Student (valid)",
+			"url": "http://localhost:8000/api/auth/register/",
+			"time": 19,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"Register returns success or 201 Created": false,
+				"Response time is acceptable (<1000ms)": true,
+				"Response is valid JSON": true
+			},
+			"testPassFailCounts": {
+				"Register returns success or 201 Created": {
+					"pass": 0,
+					"fail": 1
+				},
+				"Response time is acceptable (<1000ms)": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response is valid JSON": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				19
+			],
+			"allTests": [
+				{
+					"Register returns success or 201 Created": false,
+					"Response time is acceptable (<1000ms)": true,
+					"Response is valid JSON": true
+				}
+			]
+		},
+		{
+			"id": "48559a19-218e-471a-a509-1d647f2547e4",
+			"name": "Register - Missing required field (negative)",
+			"url": "http://localhost:8000/api/auth/register/",
+			"time": 7,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"Rejects incomplete registration with 400": true
+			},
+			"testPassFailCounts": {
+				"Rejects incomplete registration with 400": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"Rejects incomplete registration with 400": true
+				}
+			]
+		},
+		{
+			"id": "bd7fe58b-e075-4306-9777-9d181ebcc2b7",
+			"name": "Login - Student (valid credentials)",
+			"url": "http://localhost:8000/api/auth/login/",
+			"time": 1102,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Login succeeds with 200": true,
+				"Response contains auth token": true,
+				"Response time is acceptable (<1000ms)": false
+			},
+			"testPassFailCounts": {
+				"Login succeeds with 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response contains auth token": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response time is acceptable (<1000ms)": {
+					"pass": 0,
+					"fail": 1
+				}
+			},
+			"times": [
+				1102
+			],
+			"allTests": [
+				{
+					"Login succeeds with 200": true,
+					"Response contains auth token": true,
+					"Response time is acceptable (<1000ms)": false
+				}
+			]
+		},
+		{
+			"id": "13a3ed5e-d690-4f64-8cd8-f6886b689924",
+			"name": "Login - Staff (valid credentials)",
+			"url": "http://localhost:8000/api/auth/login/",
+			"time": 1055,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Login succeeds with 200": true,
+				"Response contains auth token": true
+			},
+			"testPassFailCounts": {
+				"Login succeeds with 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response contains auth token": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				1055
+			],
+			"allTests": [
+				{
+					"Login succeeds with 200": true,
+					"Response contains auth token": true
+				}
+			]
+		},
+		{
+			"id": "5e7a172b-4a6e-415b-b9a5-b9500d5cde98",
+			"name": "Login - Admin (valid credentials)",
+			"url": "http://localhost:8000/api/auth/login/",
+			"time": 1136,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Login succeeds with 200": true,
+				"Response contains auth token": true
+			},
+			"testPassFailCounts": {
+				"Login succeeds with 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response contains auth token": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				1136
+			],
+			"allTests": [
+				{
+					"Login succeeds with 200": true,
+					"Response contains auth token": true
+				}
+			]
+		},
+		{
+			"id": "253f275f-5d31-402a-87cb-091f768eba37",
+			"name": "Login - Invalid password (negative)",
+			"url": "http://localhost:8000/api/auth/login/",
+			"time": 1013,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"Rejects invalid credentials with 400 or 401": true,
+				"Does not leak a token on failed login": true
+			},
+			"testPassFailCounts": {
+				"Rejects invalid credentials with 400 or 401": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Does not leak a token on failed login": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				1013
+			],
+			"allTests": [
+				{
+					"Rejects invalid credentials with 400 or 401": true,
+					"Does not leak a token on failed login": true
+				}
+			]
+		},
+		{
+			"id": "ace5aa02-d07b-42e0-af29-8082b871374f",
+			"name": "Get Profile (authenticated)",
+			"url": "http://localhost:8000/api/auth/profile/",
+			"time": 10,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is expected": true,
+				"Response time is acceptable (<1000ms)": true,
+				"Response is valid JSON": true
+			},
+			"testPassFailCounts": {
+				"Status code is expected": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response time is acceptable (<1000ms)": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response is valid JSON": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				10
+			],
+			"allTests": [
+				{
+					"Status code is expected": true,
+					"Response time is acceptable (<1000ms)": true,
+					"Response is valid JSON": true
+				}
+			]
+		},
+		{
+			"id": "0f5e0c82-b289-49df-9fe3-88bdd323cd7c",
+			"name": "Get Profile - No token (negative)",
+			"url": "http://localhost:8000/api/auth/profile/",
+			"time": 5,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {
+				"Rejects unauthenticated request with 401": true
+			},
+			"testPassFailCounts": {
+				"Rejects unauthenticated request with 401": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				5
+			],
+			"allTests": [
+				{
+					"Rejects unauthenticated request with 401": true
+				}
+			]
+		},
+		{
+			"id": "e97e9381-b63b-4b1c-b3eb-8baf4e88f738",
+			"name": "Update Profile (PATCH)",
+			"url": "http://localhost:8000/api/auth/profile/",
+			"time": 31,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is expected": true,
+				"Response time is acceptable (<1000ms)": true,
+				"Response is valid JSON": true
+			},
+			"testPassFailCounts": {
+				"Status code is expected": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response time is acceptable (<1000ms)": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response is valid JSON": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				31
+			],
+			"allTests": [
+				{
+					"Status code is expected": true,
+					"Response time is acceptable (<1000ms)": true,
+					"Response is valid JSON": true
+				}
+			]
+		},
+		{
+			"id": "540f5fcb-bc7b-4b3d-9c74-a8e285f3cfbf",
+			"name": "List Departments (authenticated)",
+			"url": "http://localhost:8000/api/departments/",
+			"time": 45,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200": true,
+				"Response is paginated with results array": true,
+				"Stores first department id for later CRUD tests": true,
+				"Stores ICT department id for the join/staff-lifecycle chain": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response is paginated with results array": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Stores first department id for later CRUD tests": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Stores ICT department id for the join/staff-lifecycle chain": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				45
+			],
+			"allTests": [
+				{
+					"Status code is 200": true,
+					"Response is paginated with results array": true,
+					"Stores first department id for later CRUD tests": true,
+					"Stores ICT department id for the join/staff-lifecycle chain": true
+				}
+			]
+		},
+		{
+			"id": "eca8faa0-e2e9-4371-9d28-2f784cf12c89",
+			"name": "List Departments - No token (negative)",
+			"url": "http://localhost:8000/api/departments/",
+			"time": 5,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {
+				"Rejects unauthenticated request with 401": true
+			},
+			"testPassFailCounts": {
+				"Rejects unauthenticated request with 401": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				5
+			],
+			"allTests": [
+				{
+					"Rejects unauthenticated request with 401": true
+				}
+			]
+		},
+		{
+			"id": "ea664e1a-d8dc-47d2-9f91-ce901fa7f62a",
+			"name": "Create Department - Admin (valid)",
+			"url": "http://localhost:8000/api/departments/",
+			"time": 40,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {
+				"Create succeeds with 201": true,
+				"Returned department has expected fields": true
+			},
+			"testPassFailCounts": {
+				"Create succeeds with 201": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Returned department has expected fields": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				40
+			],
+			"allTests": [
+				{
+					"Create succeeds with 201": true,
+					"Returned department has expected fields": true
+				}
+			]
+		},
+		{
+			"id": "67986949-5d14-42fe-b0e3-b69660008364",
+			"name": "Create Department - Student (negative, forbidden)",
+			"url": "http://localhost:8000/api/departments/",
+			"time": 11,
+			"responseCode": {
+				"code": 403,
+				"name": "Forbidden"
+			},
+			"tests": {
+				"Rejects non-admin create with 403": true
+			},
+			"testPassFailCounts": {
+				"Rejects non-admin create with 403": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				11
+			],
+			"allTests": [
+				{
+					"Rejects non-admin create with 403": true
+				}
+			]
+		},
+		{
+			"id": "fa5d56d1-1275-4dc2-90d9-e2742c8d131a",
+			"name": "Create Department - Missing required field (negative)",
+			"url": "http://localhost:8000/api/departments/",
+			"time": 8,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"Rejects invalid payload with 400": true
+			},
+			"testPassFailCounts": {
+				"Rejects invalid payload with 400": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				8
+			],
+			"allTests": [
+				{
+					"Rejects invalid payload with 400": true
+				}
+			]
+		},
+		{
+			"id": "b813c067-f5cf-4edf-9b74-1c56d7ab5c22",
+			"name": "Retrieve Department by ID",
+			"url": "http://localhost:8000/api/departments/95/",
+			"time": 16,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is expected": true,
+				"Response time is acceptable (<1000ms)": true,
+				"Response is valid JSON": true
+			},
+			"testPassFailCounts": {
+				"Status code is expected": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response time is acceptable (<1000ms)": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response is valid JSON": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				16
+			],
+			"allTests": [
+				{
+					"Status code is expected": true,
+					"Response time is acceptable (<1000ms)": true,
+					"Response is valid JSON": true
+				}
+			]
+		},
+		{
+			"id": "e4c43234-6aa5-48df-8b9e-42ec27a7eeca",
+			"name": "Retrieve Department - Invalid ID (negative)",
+			"url": "http://localhost:8000/api/departments/999999/",
+			"time": 9,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {
+				"Returns 404 for non-existent department": true
+			},
+			"testPassFailCounts": {
+				"Returns 404 for non-existent department": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				9
+			],
+			"allTests": [
+				{
+					"Returns 404 for non-existent department": true
+				}
+			]
+		},
+		{
+			"id": "db9a88fe-e49d-4ffe-9424-4608b0b4f5d4",
+			"name": "Update Department - Admin (PUT)",
+			"url": "http://localhost:8000/api/departments/95/",
+			"time": 41,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is expected": true,
+				"Response time is acceptable (<1000ms)": true,
+				"Response is valid JSON": true
+			},
+			"testPassFailCounts": {
+				"Status code is expected": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response time is acceptable (<1000ms)": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response is valid JSON": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				41
+			],
+			"allTests": [
+				{
+					"Status code is expected": true,
+					"Response time is acceptable (<1000ms)": true,
+					"Response is valid JSON": true
+				}
+			]
+		},
+		{
+			"id": "6e497d82-cde2-4e42-8890-8f68cc1cd2c4",
+			"name": "Partial Update Department - Admin (PATCH)",
+			"url": "http://localhost:8000/api/departments/95/",
+			"time": 34,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is expected": true,
+				"Response time is acceptable (<1000ms)": true
+			},
+			"testPassFailCounts": {
+				"Status code is expected": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response time is acceptable (<1000ms)": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				34
+			],
+			"allTests": [
+				{
+					"Status code is expected": true,
+					"Response time is acceptable (<1000ms)": true
+				}
+			]
+		},
+		{
+			"id": "adfac9b4-49fe-4b1e-bc99-cb20f9c78d94",
+			"name": "Join Queue - Student",
+			"url": "http://localhost:8000/api/departments/1/join/",
+			"time": 48,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {
+				"Join queue succeeds with 200 or 201": true,
+				"Response time is acceptable (<1000ms)": true,
+				"Stores the new ticket id for the tickets/staff-lifecycle folders": true
+			},
+			"testPassFailCounts": {
+				"Join queue succeeds with 200 or 201": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response time is acceptable (<1000ms)": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Stores the new ticket id for the tickets/staff-lifecycle folders": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				48
+			],
+			"allTests": [
+				{
+					"Join queue succeeds with 200 or 201": true,
+					"Response time is acceptable (<1000ms)": true,
+					"Stores the new ticket id for the tickets/staff-lifecycle folders": true
+				}
+			]
+		},
+		{
+			"id": "f76a11dc-ee65-41c7-b556-6b76ccb75516",
+			"name": "Join Queue - No token (negative)",
+			"url": "http://localhost:8000/api/departments/1/join/",
+			"time": 5,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {
+				"Rejects unauthenticated join with 401": true
+			},
+			"testPassFailCounts": {
+				"Rejects unauthenticated join with 401": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				5
+			],
+			"allTests": [
+				{
+					"Rejects unauthenticated join with 401": true
+				}
+			]
+		},
+		{
+			"id": "7d41a47e-423f-4957-bd9b-b1ad2da5fcc3",
+			"name": "Delete (Soft-delete) Department - Admin",
+			"url": "http://localhost:8000/api/departments/95/",
+			"time": 23,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Soft-delete succeeds with 204": false
+			},
+			"testPassFailCounts": {
+				"Soft-delete succeeds with 204": {
+					"pass": 0,
+					"fail": 1
+				}
+			},
+			"times": [
+				23
+			],
+			"allTests": [
+				{
+					"Soft-delete succeeds with 204": false
+				}
+			]
+		},
+		{
+			"id": "dcf35804-574a-4bc4-8510-e16573850945",
+			"name": "Get My Ticket History",
+			"url": "http://localhost:8000/api/tickets/",
+			"time": 166,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200": true,
+				"Response time is acceptable (<1000ms)": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response time is acceptable (<1000ms)": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				166
+			],
+			"allTests": [
+				{
+					"Status code is 200": true,
+					"Response time is acceptable (<1000ms)": true
+				}
+			]
+		},
+		{
+			"id": "5775f75a-5a7e-479a-b180-86641d068203",
+			"name": "Get Active Ticket",
+			"url": "http://localhost:8000/api/tickets/active/",
+			"time": 39,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200 or 404 (no active ticket)": true,
+				"Stores active ticket id if present": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200 or 404 (no active ticket)": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Stores active ticket id if present": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				39
+			],
+			"allTests": [
+				{
+					"Status code is 200 or 404 (no active ticket)": true,
+					"Stores active ticket id if present": true
+				}
+			]
+		},
+		{
+			"id": "27b0c20e-b3aa-4663-8150-7b6d32398f6f",
+			"name": "Cancel Ticket",
+			"url": "http://localhost:8000/api/tickets/29/cancel/",
+			"time": 44,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Cancel succeeds with 200": true
+			},
+			"testPassFailCounts": {
+				"Cancel succeeds with 200": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				44
+			],
+			"allTests": [
+				{
+					"Cancel succeeds with 200": true
+				}
+			]
+		},
+		{
+			"id": "95ac21a4-9574-4967-b722-261e01009cc8",
+			"name": "Cancel Ticket - Invalid ID (negative)",
+			"url": "http://localhost:8000/api/tickets/999999/cancel/",
+			"time": 11,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {
+				"Returns 404 for non-existent ticket": true
+			},
+			"testPassFailCounts": {
+				"Returns 404 for non-existent ticket": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				11
+			],
+			"allTests": [
+				{
+					"Returns 404 for non-existent ticket": true
+				}
+			]
+		},
+		{
+			"id": "351744dd-e170-4bd5-ac39-0a591cba6a7c",
+			"name": "Cancel Ticket - No token (negative)",
+			"url": "http://localhost:8000/api/tickets/29/cancel/",
+			"time": 4,
+			"responseCode": {
+				"code": 401,
+				"name": "Unauthorized"
+			},
+			"tests": {
+				"Rejects unauthenticated cancel with 401": true
+			},
+			"testPassFailCounts": {
+				"Rejects unauthenticated cancel with 401": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				4
+			],
+			"allTests": [
+				{
+					"Rejects unauthenticated cancel with 401": true
+				}
+			]
+		},
+		{
+			"id": "3253c457-ee1c-4428-b793-a2f597d60b23",
+			"name": "Join Queue - Fresh ticket for staff lifecycle",
+			"url": "http://localhost:8000/api/departments/1/join/",
+			"time": 48,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {
+				"Join succeeds with 200 or 201": true,
+				"Stores this ticket id for the call-next/start/serve chain below": true
+			},
+			"testPassFailCounts": {
+				"Join succeeds with 200 or 201": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Stores this ticket id for the call-next/start/serve chain below": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				48
+			],
+			"allTests": [
+				{
+					"Join succeeds with 200 or 201": true,
+					"Stores this ticket id for the call-next/start/serve chain below": true
+				}
+			]
+		},
+		{
+			"id": "dec6db66-b06e-4fc7-8d1b-9c215a618e7d",
+			"name": "Get Staff Queue Snapshot",
+			"url": "http://localhost:8000/api/staff/queue/",
+			"time": 34,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is expected": true,
+				"Response time is acceptable (<1000ms)": true,
+				"Response is valid JSON": true
+			},
+			"testPassFailCounts": {
+				"Status code is expected": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response time is acceptable (<1000ms)": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response is valid JSON": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				34
+			],
+			"allTests": [
+				{
+					"Status code is expected": true,
+					"Response time is acceptable (<1000ms)": true,
+					"Response is valid JSON": true
+				}
+			]
+		},
+		{
+			"id": "0e4cd9bf-8ba4-497a-8dd5-2fb26a80c0f5",
+			"name": "Get Staff Queue - Student token (negative, forbidden)",
+			"url": "http://localhost:8000/api/staff/queue/",
+			"time": 10,
+			"responseCode": {
+				"code": 403,
+				"name": "Forbidden"
+			},
+			"tests": {
+				"Rejects student role with 403": true
+			},
+			"testPassFailCounts": {
+				"Rejects student role with 403": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				10
+			],
+			"allTests": [
+				{
+					"Rejects student role with 403": true
+				}
+			]
+		},
+		{
+			"id": "6cf1a04c-80aa-49d0-93c4-f747a7673638",
+			"name": "Call Next Ticket",
+			"url": "http://localhost:8000/api/staff/call-next/",
+			"time": 51,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200 or 204 (queue may be empty)": true,
+				"Stores called ticket id, falling back to staff_ticket_id if not returned": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200 or 204 (queue may be empty)": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Stores called ticket id, falling back to staff_ticket_id if not returned": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				51
+			],
+			"allTests": [
+				{
+					"Status code is 200 or 204 (queue may be empty)": true,
+					"Stores called ticket id, falling back to staff_ticket_id if not returned": true
+				}
+			]
+		},
+		{
+			"id": "7462165d-b686-4de9-9c4d-3565c8f5326d",
+			"name": "Start Ticket (student arrived)",
+			"url": "http://localhost:8000/api/staff/tickets/30/start/",
+			"time": 30,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is expected": true,
+				"Response time is acceptable (<1000ms)": true
+			},
+			"testPassFailCounts": {
+				"Status code is expected": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response time is acceptable (<1000ms)": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				30
+			],
+			"allTests": [
+				{
+					"Status code is expected": true,
+					"Response time is acceptable (<1000ms)": true
+				}
+			]
+		},
+		{
+			"id": "c8a073ad-2206-498e-98d3-65f0dfbad8be",
+			"name": "Serve Ticket (service completed)",
+			"url": "http://localhost:8000/api/staff/tickets/30/serve/",
+			"time": 30,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is expected": true,
+				"Response time is acceptable (<1000ms)": true
+			},
+			"testPassFailCounts": {
+				"Status code is expected": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response time is acceptable (<1000ms)": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				30
+			],
+			"allTests": [
+				{
+					"Status code is expected": true,
+					"Response time is acceptable (<1000ms)": true
+				}
+			]
+		},
+		{
+			"id": "b2bf5d00-6279-4d18-8273-341bb1baaf89",
+			"name": "Mark Ticket No-Show",
+			"url": "http://localhost:8000/api/staff/tickets/30/no-show/",
+			"time": 17,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"No-show action returns 200 or 409 (already served/cancelled)": false
+			},
+			"testPassFailCounts": {
+				"No-show action returns 200 or 409 (already served/cancelled)": {
+					"pass": 0,
+					"fail": 1
+				}
+			},
+			"times": [
+				17
+			],
+			"allTests": [
+				{
+					"No-show action returns 200 or 409 (already served/cancelled)": false
+				}
+			]
+		},
+		{
+			"id": "ef58fce7-428a-4c83-b062-3e79e2fe632a",
+			"name": "Update Queue Status - Pause",
+			"url": "http://localhost:8000/api/staff/queue/status/",
+			"time": 34,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is expected": true,
+				"Response time is acceptable (<1000ms)": true
+			},
+			"testPassFailCounts": {
+				"Status code is expected": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response time is acceptable (<1000ms)": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				34
+			],
+			"allTests": [
+				{
+					"Status code is expected": true,
+					"Response time is acceptable (<1000ms)": true
+				}
+			]
+		},
+		{
+			"id": "9cc71504-439a-4057-9d09-ba3f64aac6a1",
+			"name": "Update Queue Status - Resume",
+			"url": "http://localhost:8000/api/staff/queue/status/",
+			"time": 37,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is expected": true,
+				"Response time is acceptable (<1000ms)": true
+			},
+			"testPassFailCounts": {
+				"Status code is expected": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response time is acceptable (<1000ms)": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				37
+			],
+			"allTests": [
+				{
+					"Status code is expected": true,
+					"Response time is acceptable (<1000ms)": true
+				}
+			]
+		},
+		{
+			"id": "d941de7a-55b9-4080-8ec3-be7c165c113d",
+			"name": "Update Queue Status - Invalid value (negative)",
+			"url": "http://localhost:8000/api/staff/queue/status/",
+			"time": 12,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"Rejects invalid status value with 400": true
+			},
+			"testPassFailCounts": {
+				"Rejects invalid status value with 400": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				12
+			],
+			"allTests": [
+				{
+					"Rejects invalid status value with 400": true
+				}
+			]
+		},
+		{
+			"id": "66e1ce26-ef59-4ab1-992c-2fe0b070e593",
+			"name": "Daily Summary Report - Admin",
+			"url": "http://localhost:8000/api/reports/summary/?date=2026-08-20",
+			"time": 27,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is expected": true,
+				"Response time is acceptable (<1000ms)": true,
+				"Response is valid JSON": true
+			},
+			"testPassFailCounts": {
+				"Status code is expected": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response time is acceptable (<1000ms)": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response is valid JSON": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				27
+			],
+			"allTests": [
+				{
+					"Status code is expected": true,
+					"Response time is acceptable (<1000ms)": true,
+					"Response is valid JSON": true
+				}
+			]
+		},
+		{
+			"id": "d1d77b84-8ab7-433e-ae6c-fb99ff924bf1",
+			"name": "Daily Summary Report - Missing date param (negative)",
+			"url": "http://localhost:8000/api/reports/summary/",
+			"time": 24,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Handles missing date gracefully (200 default or 400)": true
+			},
+			"testPassFailCounts": {
+				"Handles missing date gracefully (200 default or 400)": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				24
+			],
+			"allTests": [
+				{
+					"Handles missing date gracefully (200 default or 400)": true
+				}
+			]
+		},
+		{
+			"id": "adb2b626-80c4-4697-a847-d3971c2a703e",
+			"name": "Daily Summary Report - Student token (negative, forbidden)",
+			"url": "http://localhost:8000/api/reports/summary/?date=2026-08-20",
+			"time": 38,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Rejects student role with 403": false
+			},
+			"testPassFailCounts": {
+				"Rejects student role with 403": {
+					"pass": 0,
+					"fail": 1
+				}
+			},
+			"times": [
+				38
+			],
+			"allTests": [
+				{
+					"Rejects student role with 403": false
+				}
+			]
+		},
+		{
+			"id": "e65f52cb-196f-4565-981c-07e32cc1abbf",
+			"name": "List Users - Admin",
+			"url": "http://localhost:8000/api/users/",
+			"time": 20,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200": true,
+				"Response is paginated": true,
+				"Stores first user id for later tests": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response is paginated": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Stores first user id for later tests": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				20
+			],
+			"allTests": [
+				{
+					"Status code is 200": true,
+					"Response is paginated": true,
+					"Stores first user id for later tests": true
+				}
+			]
+		},
+		{
+			"id": "30f53e68-a107-4240-8695-49c12859b5a7",
+			"name": "List Users - Student token (negative, forbidden)",
+			"url": "http://localhost:8000/api/users/",
+			"time": 9,
+			"responseCode": {
+				"code": 403,
+				"name": "Forbidden"
+			},
+			"tests": {
+				"Rejects non-admin listing with 403": true
+			},
+			"testPassFailCounts": {
+				"Rejects non-admin listing with 403": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				9
+			],
+			"allTests": [
+				{
+					"Rejects non-admin listing with 403": true
+				}
+			]
+		},
+		{
+			"id": "7079fa11-debc-4a14-ae46-2cad79536335",
+			"name": "Retrieve Single User - Admin",
+			"url": "http://localhost:8000/api/users/5/",
+			"time": 16,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is expected": true,
+				"Response time is acceptable (<1000ms)": true,
+				"Response is valid JSON": true
+			},
+			"testPassFailCounts": {
+				"Status code is expected": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response time is acceptable (<1000ms)": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response is valid JSON": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				16
+			],
+			"allTests": [
+				{
+					"Status code is expected": true,
+					"Response time is acceptable (<1000ms)": true,
+					"Response is valid JSON": true
+				}
+			]
+		},
+		{
+			"id": "df25fd97-2aa1-4ace-8882-d5fe2e86b59f",
+			"name": "Retrieve User - Invalid ID (negative)",
+			"url": "http://localhost:8000/api/users/999999/",
+			"time": 10,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {
+				"Returns 404 for non-existent user": true
+			},
+			"testPassFailCounts": {
+				"Returns 404 for non-existent user": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				10
+			],
+			"allTests": [
+				{
+					"Returns 404 for non-existent user": true
+				}
+			]
+		},
+		{
+			"id": "4930bfc7-3f48-4289-b1e6-612219ba8bfc",
+			"name": "Patch User - Admin",
+			"url": "http://localhost:8000/api/users/5/",
+			"time": 32,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is expected": true,
+				"Response time is acceptable (<1000ms)": true,
+				"Response is valid JSON": true
+			},
+			"testPassFailCounts": {
+				"Status code is expected": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response time is acceptable (<1000ms)": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response is valid JSON": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				32
+			],
+			"allTests": [
+				{
+					"Status code is expected": true,
+					"Response time is acceptable (<1000ms)": true,
+					"Response is valid JSON": true
+				}
+			]
+		},
+		{
+			"id": "b7f8b203-e31a-435c-8c96-459e4b60093f",
+			"name": "Create Staff Account - Admin",
+			"url": "http://localhost:8000/api/users/staff/",
+			"time": 18,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"Status code is 200 or 201": false
+			},
+			"testPassFailCounts": {
+				"Status code is 200 or 201": {
+					"pass": 0,
+					"fail": 1
+				}
+			},
+			"times": [
+				18
+			],
+			"allTests": [
+				{
+					"Status code is 200 or 201": false
+				}
+			]
+		},
+		{
+			"id": "2a1f091e-472c-4457-b527-81be9cd2bb31",
+			"name": "Create Staff Account - Student token (negative, forbidden)",
+			"url": "http://localhost:8000/api/users/staff/",
+			"time": 9,
+			"responseCode": {
+				"code": 403,
+				"name": "Forbidden"
+			},
+			"tests": {
+				"Rejects non-admin staff creation with 403": true
+			},
+			"testPassFailCounts": {
+				"Rejects non-admin staff creation with 403": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				9
+			],
+			"allTests": [
+				{
+					"Rejects non-admin staff creation with 403": true
+				}
+			]
+		},
+		{
+			"id": "fe076c01-7cac-4b97-81c7-9735bcc8d6f3",
+			"name": "Logout - Student",
+			"url": "http://localhost:8000/api/auth/logout/",
+			"time": 25,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Logout succeeds with 200": true,
+				"Token is invalidated after logout": true
+			},
+			"testPassFailCounts": {
+				"Logout succeeds with 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Token is invalidated after logout": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				25
+			],
+			"allTests": [
+				{
+					"Logout succeeds with 200": true,
+					"Token is invalidated after logout": true
+				}
+			]
+		}
+	],
+	"count": 1,
+	"totalTime": 5523,
+	"collection": {
+		"requests": [
+			{
+				"id": "5eafbece-97d0-4cce-acf4-939362504868",
+				"method": "GET"
+			},
+			{
+				"id": "5d2d4c30-6c43-42fe-b7e7-3ac530fc8098",
+				"method": "POST"
+			},
+			{
+				"id": "48559a19-218e-471a-a509-1d647f2547e4",
+				"method": "POST"
+			},
+			{
+				"id": "bd7fe58b-e075-4306-9777-9d181ebcc2b7",
+				"method": "POST"
+			},
+			{
+				"id": "13a3ed5e-d690-4f64-8cd8-f6886b689924",
+				"method": "POST"
+			},
+			{
+				"id": "5e7a172b-4a6e-415b-b9a5-b9500d5cde98",
+				"method": "POST"
+			},
+			{
+				"id": "253f275f-5d31-402a-87cb-091f768eba37",
+				"method": "POST"
+			},
+			{
+				"id": "ace5aa02-d07b-42e0-af29-8082b871374f",
+				"method": "GET"
+			},
+			{
+				"id": "0f5e0c82-b289-49df-9fe3-88bdd323cd7c",
+				"method": "GET"
+			},
+			{
+				"id": "e97e9381-b63b-4b1c-b3eb-8baf4e88f738",
+				"method": "PATCH"
+			},
+			{
+				"id": "540f5fcb-bc7b-4b3d-9c74-a8e285f3cfbf",
+				"method": "GET"
+			},
+			{
+				"id": "eca8faa0-e2e9-4371-9d28-2f784cf12c89",
+				"method": "GET"
+			},
+			{
+				"id": "ea664e1a-d8dc-47d2-9f91-ce901fa7f62a",
+				"method": "POST"
+			},
+			{
+				"id": "67986949-5d14-42fe-b0e3-b69660008364",
+				"method": "POST"
+			},
+			{
+				"id": "fa5d56d1-1275-4dc2-90d9-e2742c8d131a",
+				"method": "POST"
+			},
+			{
+				"id": "b813c067-f5cf-4edf-9b74-1c56d7ab5c22",
+				"method": "GET"
+			},
+			{
+				"id": "e4c43234-6aa5-48df-8b9e-42ec27a7eeca",
+				"method": "GET"
+			},
+			{
+				"id": "db9a88fe-e49d-4ffe-9424-4608b0b4f5d4",
+				"method": "PUT"
+			},
+			{
+				"id": "6e497d82-cde2-4e42-8890-8f68cc1cd2c4",
+				"method": "PATCH"
+			},
+			{
+				"id": "adfac9b4-49fe-4b1e-bc99-cb20f9c78d94",
+				"method": "POST"
+			},
+			{
+				"id": "f76a11dc-ee65-41c7-b556-6b76ccb75516",
+				"method": "POST"
+			},
+			{
+				"id": "7d41a47e-423f-4957-bd9b-b1ad2da5fcc3",
+				"method": "DELETE"
+			},
+			{
+				"id": "dcf35804-574a-4bc4-8510-e16573850945",
+				"method": "GET"
+			},
+			{
+				"id": "5775f75a-5a7e-479a-b180-86641d068203",
+				"method": "GET"
+			},
+			{
+				"id": "27b0c20e-b3aa-4663-8150-7b6d32398f6f",
+				"method": "POST"
+			},
+			{
+				"id": "95ac21a4-9574-4967-b722-261e01009cc8",
+				"method": "POST"
+			},
+			{
+				"id": "351744dd-e170-4bd5-ac39-0a591cba6a7c",
+				"method": "POST"
+			},
+			{
+				"id": "3253c457-ee1c-4428-b793-a2f597d60b23",
+				"method": "POST"
+			},
+			{
+				"id": "dec6db66-b06e-4fc7-8d1b-9c215a618e7d",
+				"method": "GET"
+			},
+			{
+				"id": "0e4cd9bf-8ba4-497a-8dd5-2fb26a80c0f5",
+				"method": "GET"
+			},
+			{
+				"id": "6cf1a04c-80aa-49d0-93c4-f747a7673638",
+				"method": "POST"
+			},
+			{
+				"id": "7462165d-b686-4de9-9c4d-3565c8f5326d",
+				"method": "POST"
+			},
+			{
+				"id": "c8a073ad-2206-498e-98d3-65f0dfbad8be",
+				"method": "POST"
+			},
+			{
+				"id": "b2bf5d00-6279-4d18-8273-341bb1baaf89",
+				"method": "POST"
+			},
+			{
+				"id": "ef58fce7-428a-4c83-b062-3e79e2fe632a",
+				"method": "POST"
+			},
+			{
+				"id": "9cc71504-439a-4057-9d09-ba3f64aac6a1",
+				"method": "POST"
+			},
+			{
+				"id": "d941de7a-55b9-4080-8ec3-be7c165c113d",
+				"method": "POST"
+			},
+			{
+				"id": "66e1ce26-ef59-4ab1-992c-2fe0b070e593",
+				"method": "GET"
+			},
+			{
+				"id": "d1d77b84-8ab7-433e-ae6c-fb99ff924bf1",
+				"method": "GET"
+			},
+			{
+				"id": "adb2b626-80c4-4697-a847-d3971c2a703e",
+				"method": "GET"
+			},
+			{
+				"id": "e65f52cb-196f-4565-981c-07e32cc1abbf",
+				"method": "GET"
+			},
+			{
+				"id": "30f53e68-a107-4240-8695-49c12859b5a7",
+				"method": "GET"
+			},
+			{
+				"id": "7079fa11-debc-4a14-ae46-2cad79536335",
+				"method": "GET"
+			},
+			{
+				"id": "df25fd97-2aa1-4ace-8882-d5fe2e86b59f",
+				"method": "GET"
+			},
+			{
+				"id": "4930bfc7-3f48-4289-b1e6-612219ba8bfc",
+				"method": "PATCH"
+			},
+			{
+				"id": "b7f8b203-e31a-435c-8c96-459e4b60093f",
+				"method": "POST"
+			},
+			{
+				"id": "2a1f091e-472c-4457-b527-81be9cd2bb31",
+				"method": "POST"
+			},
+			{
+				"id": "fe076c01-7cac-4b97-81c7-9735bcc8d6f3",
+				"method": "POST"
+			}
+		]
+	}
+}
