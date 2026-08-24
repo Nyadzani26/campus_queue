@@ -119,10 +119,13 @@ export const getMyActiveTicket = () => {
   return apiRequest('/tickets/active/', 'GET');
 };
 
-// 🔥 FIXED: Use the correct endpoint for joining a queue
+export const getMyTickets = () => {
+  return apiRequest('/tickets/', 'GET');
+};
+
 export const joinQueue = (departmentId, description = '') => {
   return apiRequest(`/departments/${departmentId}/join/`, 'POST', {
-    note: description,  // the backend expects 'note', not 'description'
+    note: description,
   });
 };
 

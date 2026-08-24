@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { 
   getDepartments, 
   getMyActiveTicket, 
+  getMyTickets,
   joinQueue, 
   cancelTicket 
 } from '../api';
@@ -14,6 +15,7 @@ const Dashboard = () => {
   const { user, logoutUser } = useAuth();
   const navigate = useNavigate();
   const [departments, setDepartments] = useState([]);
+  const [ticketHistory, setTicketHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedDepartment, setSelectedDepartment] = useState(null);
   const [showJoinModal, setShowJoinModal] = useState(false);
@@ -40,10 +42,12 @@ const Dashboard = () => {
   useEffect(() => {
     fetchDepartments();
     fetchMyTicket();
+    fetchTicketHistory();
     const interval = setInterval(() => {
       fetchMyTicket();
       fetchDepartments();
-    }, 10000);
+      fetchTicketHistory();
+    }, 8000);
     return () => clearInterval(interval);
   }, []);
 
@@ -58,7 +62,7 @@ const Dashboard = () => {
         setError('Failed to load departments');
       }
     } catch (err) {
-      setError('Network error: Could not connect to the server');
+      setError('Network error: Could not connect to backend server');
     } finally {
       setLoading(false);
     }
@@ -78,6 +82,36 @@ const Dashboard = () => {
     }
   };
 
+  const fetchTicketHistory = async () => {
+    try {
+      const response = await getMyTickets();
+      if (response.ok) {
+        const data = await response.json();
+        setTicketHistory(Array.isArray(data) ? data : (data.results || []));
+      }
+    } catch (err) {
+      console.error('Error fetching ticket history:', err);
+    }
+  };
+
+  const getDepartmentImage = (code) => {
+    switch (code?.toUpperCase()) {
+      case 'ICT':
+        return 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80';
+      case 'FIN':
+        return 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=600&q=80';
+      case 'ADM':
+        return 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=600&q=80';
+      case 'ACC':
+        return 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=600&q=80';
+      case 'HEALTH':
+      case 'WELL':
+        return 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=600&q=80';
+      default:
+        return 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=600&q=80';
+    }
+  };
+
   const handleJoinQueue = async () => {
     if (!selectedDepartment) return;
     setJoinLoading(true);
@@ -88,7 +122,8 @@ const Dashboard = () => {
         setMyTicket(data);
         setShowJoinModal(false);
         setNote('');
-        showAlert('🎉 Queue Joined!', `You have been issued ticket ${data.ticket_code || data.number}. Position #${data.position}`);
+        fetchTicketHistory();
+        showAlert('🎉 Ticket Issued!', `You have been issued ticket ${data.ticket_code || data.number}. Position #${data.position}`);
       } else {
         showAlert('Unable to Join Queue', data.detail || 'Could not join queue.', 'error');
       }
@@ -107,6 +142,7 @@ const Dashboard = () => {
       if (response.ok) {
         setMyTicket(null);
         setShowCancelModal(false);
+        fetchTicketHistory();
         showAlert('Ticket Cancelled', 'Your ticket was successfully cancelled.', 'success');
       } else {
         const data = await response.json();
@@ -120,7 +156,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f4f7fa' }}>
+    <div style={{ minHeight: '100vh', background: '#f4f7fa', display: 'flex', flexDirection: 'column' }}>
       {/* Top Header */}
       <header className="spu-header">
         <div className="spu-header-container">
@@ -150,29 +186,29 @@ const Dashboard = () => {
         <div className="page-banner">
           <div className="page-banner-title">
             <h1>Student Service Hub</h1>
-            <p>Welcome back, {user?.first_name || user?.username} ({user?.student_number || 'SPU Student'}). View your live ticket status or join a department queue.</p>
+            <p>Welcome back, <strong>{user?.first_name} {user?.last_name}</strong> (Student ID: <strong>{user?.student_number || 'SPU Student'}</strong>)</p>
           </div>
           <div className="banner-badge">
-            <span>🟢 Campus Queues Active</span>
+            <span>🟢 Campus Services Online</span>
           </div>
         </div>
 
         {error && (
-          <div style={{ background: '#fef2f2', border: '1px solid #fecaca', color: '#991b1b', padding: '1rem', borderRadius: '12px', marginBottom: '1.5rem', fontWeight: '600' }}>
+          <div style={{ background: '#fef2f2', border: '1px solid #fecaca', color: '#991b1b', padding: '1rem', borderRadius: '14px', marginBottom: '1.8rem', fontWeight: '600' }}>
             ❌ {error}
           </div>
         )}
 
-        {/* Live Ticket Card */}
+        {/* Live Active Ticket Card */}
         {myTicket && (
-          <div className="active-ticket-banner">
+          <section className="active-ticket-banner">
             <div className="ticket-header-row">
               <div>
                 <span style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.75)', textTransform: 'uppercase', fontWeight: 800, letterSpacing: '1px' }}>
-                  YOUR ACTIVE DIGITAL TICKET
+                  YOUR LIVE DIGITAL TICKET
                 </span>
-                <h3 style={{ fontSize: '1.4rem', color: '#fff', margin: '2px 0 0' }}>
-                  {myTicket.department || 'Department Queue'}
+                <h3 style={{ fontSize: '1.5rem', color: '#fff', margin: '4px 0 0', fontWeight: 800 }}>
+                  {myTicket.department || 'Department Service Queue'}
                 </h3>
               </div>
               <span className={`ticket-status-pill ${myTicket.status}`}>
@@ -182,7 +218,7 @@ const Dashboard = () => {
 
             <div className="ticket-grid-details">
               <div>
-                <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.7)', textTransform: 'uppercase', fontWeight: 700 }}>Ticket Code</div>
+                <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.75)', textTransform: 'uppercase', fontWeight: 800 }}>Ticket Code</div>
                 <div className="big-ticket-code">{myTicket.ticket_code || myTicket.number}</div>
               </div>
 
@@ -202,14 +238,14 @@ const Dashboard = () => {
                 </button>
               </div>
             </div>
-          </div>
+          </section>
         )}
 
-        {/* Departments Grid */}
-        <section style={{ marginTop: '2rem' }}>
-          <div style={{ marginBottom: '1.5rem' }}>
-            <h2 style={{ fontSize: '1.6rem', color: '#003366', fontWeight: '800' }}>Available Department Queues</h2>
-            <p style={{ color: '#64748b', fontSize: '0.95rem' }}>Select a service counter below to join today's virtual queue.</p>
+        {/* Available Department Queues */}
+        <section style={{ marginBottom: '3rem' }}>
+          <div style={{ marginBottom: '1.8rem' }}>
+            <h2 style={{ fontSize: '1.8rem', color: '#003366', fontWeight: '900' }}>Campus Service Queues</h2>
+            <p style={{ color: '#64748b', fontSize: '1.02rem' }}>Browse active department service desks and join a queue virtually.</p>
           </div>
 
           {loading ? (
@@ -218,15 +254,20 @@ const Dashboard = () => {
             <div className="services-grid">
               {departments.map((dept) => (
                 <div key={dept.id} className="service-card">
+                  <div className="card-img-wrapper">
+                    <img 
+                      src={getDepartmentImage(dept.code)} 
+                      alt={dept.name} 
+                      className="card-img"
+                    />
+                    <span className={`status-pill ${dept.is_open ? 'open' : 'closed'}`}>
+                      {dept.is_open ? '🟢 Open Now' : '🔴 Closed'}
+                    </span>
+                  </div>
                   <div className="card-body">
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                      <span className="dept-code">{dept.code}</span>
-                      <span className={`status-pill ${dept.is_open ? 'open' : 'closed'}`}>
-                        {dept.is_open ? '🟢 Open' : '🔴 Closed'}
-                      </span>
-                    </div>
+                    <div className="dept-code">{dept.code}</div>
                     <h3>{dept.name}</h3>
-                    <p className="dept-desc">{dept.description || 'Student support & administrative service desk.'}</p>
+                    <p className="dept-desc">{dept.description || 'Assisting students with inquiries and support.'}</p>
                     
                     <div className="dept-meta">
                       <div>📍 {dept.location || 'Central Campus'}</div>
@@ -239,7 +280,7 @@ const Dashboard = () => {
                         <span className="chip-val">{dept.waiting_count ?? 0}</span>
                       </div>
                       <div className="stat-chip">
-                        <span className="chip-label">Est. Wait</span>
+                        <span className="chip-label">Avg. Service</span>
                         <span className="chip-val">{dept.avg_service_minutes || 10}m</span>
                       </div>
                     </div>
@@ -267,6 +308,45 @@ const Dashboard = () => {
           )}
         </section>
 
+        {/* Ticket History Section */}
+        {ticketHistory.length > 0 && (
+          <section>
+            <div style={{ marginBottom: '1.4rem' }}>
+              <h2 style={{ fontSize: '1.6rem', color: '#003366', fontWeight: '900' }}>Your Ticket History</h2>
+              <p style={{ color: '#64748b', fontSize: '0.98rem' }}>Recent queue requests and consultation records.</p>
+            </div>
+
+            <div className="modern-table-wrapper">
+              <table className="modern-table">
+                <thead>
+                  <tr>
+                    <th>Ticket Code</th>
+                    <th>Department</th>
+                    <th>Status</th>
+                    <th>Issued At</th>
+                    <th>Served / Closed</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {ticketHistory.map((t) => (
+                    <tr key={t.id}>
+                      <td style={{ fontWeight: 900, color: '#0066cc' }}>{t.ticket_code || t.number}</td>
+                      <td style={{ fontWeight: 700 }}>{t.department}</td>
+                      <td>
+                        <span className={`ticket-status-pill ${t.status}`}>
+                          {t.status_display || t.status}
+                        </span>
+                      </td>
+                      <td style={{ color: '#64748b' }}>{t.created_at ? new Date(t.created_at).toLocaleString() : '-'}</td>
+                      <td style={{ color: '#64748b' }}>{t.closed_at ? new Date(t.closed_at).toLocaleTimeString() : (t.served_at ? new Date(t.served_at).toLocaleTimeString() : '-')}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        )}
+
         {/* Join Queue Modal */}
         <Modal 
           isOpen={showJoinModal} 
@@ -274,22 +354,22 @@ const Dashboard = () => {
           title={`Join ${selectedDepartment?.name || 'Queue'}`}
         >
           <div style={{ padding: '0.5rem 0' }}>
-            <p style={{ color: '#64748b', fontSize: '0.95rem', marginBottom: '1rem' }}>
-              You are joining the virtual queue for <strong>{selectedDepartment?.name}</strong>. Provide an optional note for staff.
+            <p style={{ color: '#64748b', fontSize: '0.95rem', marginBottom: '1.2rem' }}>
+              You are requesting a ticket for <strong>{selectedDepartment?.name}</strong>. Add an optional note for staff.
             </p>
-            <div style={{ marginBottom: '1.2rem' }}>
+            <div style={{ marginBottom: '1.4rem' }}>
               <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '700', color: '#1e293b', marginBottom: '6px' }}>Reason for Visit (Optional)</label>
               <textarea 
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
                 placeholder="e.g. NSFAS allowance query, IT password reset..."
-                style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1', fontFamily: 'inherit', resize: 'vertical', minHeight: '80px' }}
+                style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid #cbd5e1', fontFamily: 'inherit', resize: 'vertical', minHeight: '85px', boxSizing: 'border-box' }}
               />
             </div>
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
-              <button onClick={() => setShowJoinModal(false)} style={{ background: '#e2e8f0', color: '#1e293b', border: 'none', padding: '10px 18px', borderRadius: '8px', fontWeight: '700', cursor: 'pointer' }}>Cancel</button>
+              <button onClick={() => setShowJoinModal(false)} style={{ background: '#e2e8f0', color: '#1e293b', border: 'none', padding: '10px 20px', borderRadius: '8px', fontWeight: '700', cursor: 'pointer' }}>Cancel</button>
               <button onClick={handleJoinQueue} disabled={joinLoading} className="btn-primary">
-                {joinLoading ? 'Joining...' : 'Confirm & Join'}
+                {joinLoading ? 'Joining...' : 'Confirm & Join Queue'}
               </button>
             </div>
           </div>
@@ -306,7 +386,7 @@ const Dashboard = () => {
               Are you sure you want to cancel ticket <strong>{myTicket?.ticket_code}</strong>? You will lose your position in line.
             </p>
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
-              <button onClick={() => setShowCancelModal(false)} style={{ background: '#e2e8f0', color: '#1e293b', border: 'none', padding: '10px 18px', borderRadius: '8px', fontWeight: '700', cursor: 'pointer' }}>Keep Ticket</button>
+              <button onClick={() => setShowCancelModal(false)} style={{ background: '#e2e8f0', color: '#1e293b', border: 'none', padding: '10px 20px', borderRadius: '8px', fontWeight: '700', cursor: 'pointer' }}>Keep Ticket</button>
               <button onClick={handleCancelTicket} disabled={cancelLoading} className="btn-cancel-ticket" style={{ background: '#dc2626', color: '#fff' }}>
                 {cancelLoading ? 'Cancelling...' : 'Yes, Cancel Ticket'}
               </button>
