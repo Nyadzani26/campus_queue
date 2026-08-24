@@ -19,6 +19,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from drf_spectacular.utils import extend_schema
 
 from queues.permissions import IsAdmin
 from .serializers import (
@@ -36,7 +37,9 @@ class RegisterView(APIView):
     """POST /api/auth/register/ - public student registration."""
 
     permission_classes = [AllowAny]
+    serializer_class = RegisterSerializer
 
+    @extend_schema(request=RegisterSerializer, responses={201: UserSerializer})
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -52,7 +55,9 @@ class LoginView(APIView):
     """POST /api/auth/login/ - returns an auth token + profile."""
 
     permission_classes = [AllowAny]
+    serializer_class = LoginSerializer
 
+    @extend_schema(request=LoginSerializer)
     def post(self, request):
         serializer = LoginSerializer(data=request.data, context={"request": request})
         serializer.is_valid(raise_exception=True)
@@ -66,6 +71,7 @@ class LogoutView(APIView):
 
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(responses={200: dict})
     def post(self, request):
         Token.objects.filter(user=request.user).delete()
         return Response({"detail": "Logged out successfully."})
@@ -75,10 +81,13 @@ class ProfileView(APIView):
     """GET/PATCH /api/auth/profile/ - the authenticated user's profile."""
 
     permission_classes = [IsAuthenticated]
+    serializer_class = UserSerializer
 
+    @extend_schema(responses={200: UserSerializer})
     def get(self, request):
         return Response(UserSerializer(request.user).data)
 
+    @extend_schema(request=ProfileUpdateSerializer, responses={200: UserSerializer})
     def patch(self, request):
         serializer = ProfileUpdateSerializer(
             request.user, data=request.data, partial=True
@@ -106,7 +115,9 @@ class StaffCreateView(APIView):
     """POST /api/users/staff/ - admin creates a staff account."""
 
     permission_classes = [IsAdmin]
+    serializer_class = StaffCreateSerializer
 
+    @extend_schema(request=StaffCreateSerializer, responses={201: UserSerializer})
     def post(self, request):
         serializer = StaffCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -118,6 +129,7 @@ class UserDetailView(APIView):
     """GET/PATCH /api/users/<id>/ - admin manages a single account."""
 
     permission_classes = [IsAdmin]
+    serializer_class = UserSerializer
 
     def get_object(self, pk):
         try:
@@ -125,6 +137,7 @@ class UserDetailView(APIView):
         except User.DoesNotExist:
             return None
 
+    @extend_schema(responses={200: UserSerializer})
     def get(self, request, pk):
         user = self.get_object(pk)
         if user is None:
@@ -133,6 +146,7 @@ class UserDetailView(APIView):
             )
         return Response(UserSerializer(user).data)
 
+    @extend_schema(request=UserSerializer, responses={200: UserSerializer})
     def patch(self, request, pk):
         user = self.get_object(pk)
         if user is None:

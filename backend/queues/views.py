@@ -27,6 +27,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from drf_spectacular.utils import extend_schema
 
 from .models import Department, Queue, Ticket
 from .permissions import IsAdmin, IsAdminOrReadOnly, IsStaffMember, IsStudent
@@ -44,14 +45,13 @@ from .serializers import (
 
 
 class DepartmentViewSet(viewsets.ModelViewSet):
-    """CRUD for departments. Read: any authenticated user. Write: admin only."""
+    """CRUD for departments. Read: any user (including guests). Write: admin only."""
 
     serializer_class = DepartmentSerializer
     permission_classes = [IsAdminOrReadOnly]
 
     def get_queryset(self):
         queryset = Department.objects.all()
-        # Students and unauthenticated visitors only see active departments; admins see everything.
         user_role = getattr(self.request.user, "role", None) if self.request.user and self.request.user.is_authenticated else None
         if user_role != "admin":
             queryset = queryset.filter(is_active=True)
@@ -67,6 +67,7 @@ class DepartmentViewSet(viewsets.ModelViewSet):
             status=status.HTTP_200_OK,
         )
 
+    @extend_schema(request=JoinQueueSerializer, responses={201: TicketSerializer})
     @action(detail=True, methods=["post"], permission_classes=[IsStudent])
     def join(self, request, pk=None):
         """Student joins today's queue for this department."""
@@ -123,6 +124,7 @@ class MyTicketsView(APIView):
 
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(responses={200: TicketSerializer(many=True)})
     def get(self, request):
         tickets = Ticket.objects.filter(student=request.user).order_by("-created_at")[
             :50
@@ -131,13 +133,11 @@ class MyTicketsView(APIView):
 
 
 class MyActiveTicketView(APIView):
-    """GET /api/tickets/active/ - live status of the caller's active ticket.
-
-    The student dashboard polls this endpoint for near-real-time updates.
-    """
+    """GET /api/tickets/active/ - live status of the caller's active ticket."""
 
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(responses={200: TicketSerializer})
     def get(self, request):
         ticket = (
             Ticket.objects.filter(
@@ -158,6 +158,7 @@ class CancelTicketView(APIView):
 
     permission_classes = [IsStudent]
 
+    @extend_schema(responses={200: TicketSerializer})
     def post(self, request, pk):
         try:
             ticket = Ticket.objects.get(pk=pk, student=request.user)
@@ -198,6 +199,7 @@ class StaffQueueView(APIView):
 
     permission_classes = [IsStaffMember]
 
+    @extend_schema(responses={200: dict})
     def get(self, request):
         queue, error = _staff_queue_or_error(request.user)
         if error:
@@ -218,11 +220,13 @@ class StaffQueueView(APIView):
             "now_serving": TicketSerializer(now_serving).data if now_serving else None,
         })
 
+
 class CallNextView(APIView):
     """POST /api/staff/call-next/ - call the next waiting ticket."""
 
     permission_classes = [IsStaffMember]
 
+    @extend_schema(responses={200: TicketSerializer})
     def post(self, request):
         queue, error = _staff_queue_or_error(request.user)
         if error:
@@ -293,8 +297,9 @@ class _StaffTicketActionView(APIView):
 
 
 class StartServingView(_StaffTicketActionView):
-    """POST /api/staff/tickets/<id>/start/ - the student arrived at the counter."""
+    """POST /api/staff/tickets/<id>/start/ - student arrived at counter."""
 
+    @extend_schema(responses={200: TicketSerializer})
     def post(self, request, pk):
         ticket, error = self.get_ticket(request, pk)
         if error:
@@ -313,6 +318,7 @@ class StartServingView(_StaffTicketActionView):
 class ServeTicketView(_StaffTicketActionView):
     """POST /api/staff/tickets/<id>/serve/ - service completed."""
 
+    @extend_schema(responses={200: TicketSerializer})
     def post(self, request, pk):
         ticket, error = self.get_ticket(request, pk)
         if error:
@@ -337,6 +343,7 @@ class ServeTicketView(_StaffTicketActionView):
 class NoShowView(_StaffTicketActionView):
     """POST /api/staff/tickets/<id>/no-show/ - called student never arrived."""
 
+    @extend_schema(responses={200: TicketSerializer})
     def post(self, request, pk):
         ticket, error = self.get_ticket(request, pk)
         if error:
@@ -356,7 +363,9 @@ class QueueStatusView(APIView):
     """POST /api/staff/queue/status/ - pause, resume or close today's queue."""
 
     permission_classes = [IsStaffMember]
+    serializer_class = QueueSerializer
 
+    @extend_schema(request=QueueSerializer, responses={200: QueueSerializer})
     def post(self, request):
         queue, error = _staff_queue_or_error(request.user)
         if error:
@@ -384,6 +393,7 @@ class ReportSummaryView(APIView):
 
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(responses={200: dict})
     def get(self, request):
         date_str = request.query_params.get("date")
         if date_str:
