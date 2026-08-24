@@ -13,6 +13,10 @@ class DepartmentSerializer(serializers.ModelSerializer):
     estimated_wait_minutes = serializers.SerializerMethodField()
     queue_status = serializers.SerializerMethodField()
 
+    # ===== ADD THIS =====
+    is_open = serializers.SerializerMethodField()
+    # ====================
+
     class Meta:
         model = Department
         fields = [
@@ -29,6 +33,7 @@ class DepartmentSerializer(serializers.ModelSerializer):
             "now_serving",
             "estimated_wait_minutes",
             "queue_status",
+            "is_open", 
             "created_at",
         ]
         read_only_fields = ["id", "created_at"]
@@ -66,6 +71,12 @@ class DepartmentSerializer(serializers.ModelSerializer):
     def get_queue_status(self, obj) -> str:
         queue = self._today_queue(obj)
         return queue.status if queue else Queue.Status.OPEN
+
+    # ===== ADD THIS =====
+    def get_is_open(self, obj) -> bool:
+        """Return True if the department's queue is open."""
+        return self.get_queue_status(obj) == Queue.Status.OPEN
+    # ====================
 
 
 class TicketSerializer(serializers.ModelSerializer):

@@ -23,6 +23,20 @@ const Dashboard = () => {
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [modalLoading, setModalLoading] = useState(false);
 
+  // ----- Alert Modal State (ADDED) -----
+  const [showAlertModal, setShowAlertModal] = useState(false);
+  const [alertTitle, setAlertTitle] = useState('');
+  const [alertMessage, setAlertMessage] = useState('');
+  const [alertType, setAlertType] = useState('success');
+
+  const showAlert = (title, message, type = 'success') => {
+    setAlertTitle(title);
+    setAlertMessage(message);
+    setAlertType(type);
+    setShowAlertModal(true);
+  };
+  // -------------------------------------
+
   useEffect(() => {
     fetchDepartments();
     fetchMyTicket();
@@ -109,16 +123,18 @@ const Dashboard = () => {
         setShowJoinModal(false);
         setDescription('');
         await fetchDepartments();
-        // Show a simple toast or just rely on UI update
-        console.log('✅ Successfully joined the queue!');
+        // 🔥 REPLACED alert() with custom modal
+        showAlert('✅ Success', 'Successfully joined the queue!');
       } else {
         const errorData = await response.json().catch(() => ({}));
         console.error('Join queue error:', errorData);
-        alert(`❌ ${errorData.error || errorData.detail || 'Failed to join queue'}`);
+        // 🔥 REPLACED alert() with custom modal
+        showAlert('❌ Error', errorData.error || errorData.detail || 'Failed to join queue', 'error');
       }
     } catch (error) {
       console.error('Error joining queue:', error);
-      alert('❌ Network error: Could not connect to the server');
+      // 🔥 REPLACED alert() with custom modal
+      showAlert('❌ Error', 'Network error: Could not connect to the server', 'error');
     } finally {
       setJoinLoading(false);
     }
@@ -134,15 +150,18 @@ const Dashboard = () => {
       if (response.ok) {
         setMyTicket(null);
         await fetchDepartments();
-        console.log('✅ Ticket cancelled successfully');
+        // 🔥 REPLACED alert() with custom modal
+        showAlert('✅ Success', 'Ticket cancelled successfully!');
       } else {
         const errorData = await response.json().catch(() => ({}));
         console.error('Cancel ticket error:', errorData);
-        alert(`❌ ${errorData.error || errorData.detail || 'Failed to cancel ticket'}`);
+        // 🔥 REPLACED alert() with custom modal
+        showAlert('❌ Error', errorData.error || errorData.detail || 'Failed to cancel ticket', 'error');
       }
     } catch (error) {
       console.error('Error cancelling ticket:', error);
-      alert('❌ Network error: Could not connect to the server');
+      // 🔥 REPLACED alert() with custom modal
+      showAlert('❌ Error', 'Network error: Could not connect to the server', 'error');
     } finally {
       setModalLoading(false);
       setShowCancelModal(false);
@@ -324,6 +343,18 @@ const Dashboard = () => {
         confirmColor="#e74c3c"
         loading={modalLoading}
         type="confirm"
+      />
+
+      {/* 🔥 Alert Modal (ADDED) */}
+      <Modal
+        isOpen={showAlertModal}
+        onClose={() => setShowAlertModal(false)}
+        onConfirm={() => setShowAlertModal(false)}
+        title={alertTitle}
+        message={alertMessage}
+        confirmText="OK"
+        confirmColor={alertType === 'success' ? '#27ae60' : '#e74c3c'}
+        type="alert"
       />
     </div>
   );
