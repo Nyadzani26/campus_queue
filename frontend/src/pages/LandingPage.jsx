@@ -1,5 +1,5 @@
-// frontend/src/pages/LandingPage.jsx
 import React, { useState, useEffect } from 'react';
+import '../index.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getDepartments } from '../api';
