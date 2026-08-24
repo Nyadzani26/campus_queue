@@ -206,19 +206,16 @@ class StaffQueueView(APIView):
         now_serving = queue.now_serving
 
         return Response({
-            # Identity
-            "department_name": queue.department.name,
-            "department_code": queue.department.code,
-            # Queue state
-            "status": queue.status,
-            "waiting_count": queue.waiting_count,
-            "average_service_minutes": queue.average_service_minutes(),
-            # Now serving (full ticket object or null)
+            "department": {
+                "id": queue.department.id,
+                "name": queue.department.name,
+                "code": queue.department.code,
+                "is_open": queue.department.is_open if hasattr(queue.department, 'is_open') else (queue.status == "open"),
+                "avg_wait": queue.average_service_minutes() or 0,
+            },
+            "waiting_list": TicketSerializer(waiting, many=True).data,
             "now_serving": TicketSerializer(now_serving).data if now_serving else None,
-            # Waiting list
-            "waiting_tickets": TicketSerializer(waiting, many=True).data,
         })
-
 
 class CallNextView(APIView):
     """POST /api/staff/call-next/ - call the next waiting ticket."""
@@ -384,7 +381,7 @@ class QueueStatusView(APIView):
 class ReportSummaryView(APIView):
     """GET /api/reports/summary/?date=YYYY-MM-DD - per-department daily report."""
 
-    permission_classes = [IsAdmin]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         date_str = request.query_params.get("date")

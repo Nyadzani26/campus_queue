@@ -48,6 +48,6 @@ urlpatterns = [
     path('api/', include('queues.urls')),
     path('api/', api_root, name='api-root'),
 
-    # Frontend SPA
-    path('', TemplateView.as_view(template_name='index.html'), name='home'),
+    # API Root
+    path('', api_root, name='root'),
 ]

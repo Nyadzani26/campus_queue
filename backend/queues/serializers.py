@@ -13,6 +13,10 @@ class DepartmentSerializer(serializers.ModelSerializer):
     estimated_wait_minutes = serializers.SerializerMethodField()
     queue_status = serializers.SerializerMethodField()
 
+    # ===== ADD THIS =====
+    is_open = serializers.SerializerMethodField()
+    # ====================
+
     class Meta:
         model = Department
         fields = [
@@ -29,6 +33,7 @@ class DepartmentSerializer(serializers.ModelSerializer):
             "now_serving",
             "estimated_wait_minutes",
             "queue_status",
+            "is_open", 
             "created_at",
         ]
         read_only_fields = ["id", "created_at"]
@@ -67,6 +72,12 @@ class DepartmentSerializer(serializers.ModelSerializer):
         queue = self._today_queue(obj)
         return queue.status if queue else Queue.Status.OPEN
 
+    # ===== ADD THIS =====
+    def get_is_open(self, obj) -> bool:
+        """Return True if the department's queue is open."""
+        return self.get_queue_status(obj) == Queue.Status.OPEN
+    # ====================
+
 
 class TicketSerializer(serializers.ModelSerializer):
     """Full ticket representation including live position and estimates."""
@@ -87,6 +98,12 @@ class TicketSerializer(serializers.ModelSerializer):
         source="served_by.username", read_only=True, default=None
     )
     status_display = serializers.CharField(source="get_status_display", read_only=True)
+
+    # ====== NEW FIELDS FOR FRONTEND COMPATIBILITY ======
+    customer_name = serializers.SerializerMethodField()
+    customer_username = serializers.CharField(source="student.username", read_only=True)
+    estimated_wait = serializers.FloatField(source="estimated_wait_minutes", read_only=True)
+    # ===================================================
 
     class Meta:
         model = Ticket
@@ -110,12 +127,20 @@ class TicketSerializer(serializers.ModelSerializer):
             "serving_started_at",
             "served_at",
             "closed_at",
+            # New fields added here
+            "customer_name",
+            "customer_username",
+            "estimated_wait",
         ]
         read_only_fields = fields
 
     def get_student_name(self, obj) -> str:
         full = f"{obj.student.first_name} {obj.student.last_name}".strip()
         return full or obj.student.username
+
+    # ====== NEW METHOD FOR customer_name ======
+    def get_customer_name(self, obj) -> str:
+        return self.get_student_name(obj)  # same as student_name
 
 
 class JoinQueueSerializer(serializers.Serializer):

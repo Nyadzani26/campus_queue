@@ -58,3 +58,8 @@ htmlcov/
 .pytest_cache/
 .tox/
 .nox/
+
+# Node / Frontend
+node_modules/
+dist/
+.vite/
