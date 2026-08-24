@@ -7,41 +7,46 @@ const Modal = ({
   onConfirm, 
   title, 
   message, 
+  children,
   confirmText = 'Confirm', 
   cancelText = 'Cancel',
-  confirmColor = '#1a73e8',
+  confirmColor = '#003366',
   loading = false,
-  type = 'confirm' // 'confirm' or 'alert'
+  type = 'confirm'
 }) => {
   if (!isOpen) return null;
 
   return (
     <div style={styles.overlay} onClick={type === 'alert' ? null : onClose}>
       <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <h3 style={styles.title}>{title}</h3>
-        <p style={styles.message}>{message}</p>
+        {title && <h3 style={styles.title}>{title}</h3>}
+        {message && <p style={styles.message}>{message}</p>}
         
-        <div style={styles.actions}>
-          {type === 'confirm' && (
+        {children ? (
+          children
+        ) : (
+          <div style={styles.actions}>
+            {type === 'confirm' && (
+              <button 
+                onClick={onClose} 
+                style={styles.cancelBtn}
+                disabled={loading}
+              >
+                {cancelText}
+              </button>
+            )}
             <button 
-              onClick={onClose} 
-              style={styles.cancelBtn}
+              onClick={onConfirm} 
+              style={{
+                ...styles.confirmBtn,
+                backgroundColor: confirmColor,
+              }}
               disabled={loading}
             >
-              {cancelText}
+              {loading ? 'Processing...' : confirmText}
             </button>
-          )}
-          <button 
-            onClick={onConfirm} 
-            style={{
-              ...styles.confirmBtn,
-              backgroundColor: confirmColor,
-            }}
-            disabled={loading}
-          >
-            {loading ? 'Processing...' : confirmText}
-          </button>
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -59,50 +64,53 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 9999,
+    backdropFilter: 'blur(4px)',
   },
   modal: {
     backgroundColor: 'white',
-    padding: '30px 35px',
-    borderRadius: '8px',
-    maxWidth: '450px',
+    padding: '24px 28px',
+    borderRadius: '14px',
+    maxWidth: '480px',
     width: '90%',
-    boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+    boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
+    border: '1px solid #e2e8f0',
   },
   title: {
     margin: '0 0 10px 0',
-    color: '#333',
-    fontSize: '20px',
-    fontWeight: 'bold',
+    color: '#003366',
+    fontSize: '1.25rem',
+    fontWeight: '800',
   },
   message: {
-    margin: '0 0 25px 0',
-    color: '#555',
-    fontSize: '16px',
+    margin: '0 0 20px 0',
+    color: '#64748b',
+    fontSize: '0.98rem',
     lineHeight: '1.5',
   },
   actions: {
     display: 'flex',
     gap: '12px',
     justifyContent: 'flex-end',
+    marginTop: '1.5rem',
   },
   cancelBtn: {
-    padding: '10px 24px',
-    backgroundColor: '#f0f0f0',
-    color: '#333',
+    padding: '10px 20px',
+    backgroundColor: '#e2e8f0',
+    color: '#1e293b',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: '8px',
     cursor: 'pointer',
-    fontSize: '14px',
-    fontWeight: '500',
+    fontSize: '0.9rem',
+    fontWeight: '700',
   },
   confirmBtn: {
-    padding: '10px 24px',
+    padding: '10px 22px',
     color: 'white',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: '8px',
     cursor: 'pointer',
-    fontSize: '14px',
-    fontWeight: '500',
+    fontSize: '0.9rem',
+    fontWeight: '700',
   },
 };
 
