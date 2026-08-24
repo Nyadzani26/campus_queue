@@ -4,14 +4,14 @@ URL configuration for SPU SmartQueue.
 
 from django.contrib import admin
 from django.urls import path, include
-from django.views.generic import TemplateView
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
+@authentication_classes([])
 def api_root(request):
     """API root — returns system info and available endpoint groups."""
     return Response({
@@ -43,11 +43,13 @@ urlpatterns = [
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('api/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 
+    # API Root endpoint (AllowAny, No Auth) must come before router
+    path('api/', api_root, name='api-root'),
+
     # REST API
     path('api/', include('accounts.urls')),
     path('api/', include('queues.urls')),
-    path('api/', api_root, name='api-root'),
 
-    # API Root
+    # Site Root
     path('', api_root, name='root'),
 ]

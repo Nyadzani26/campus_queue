@@ -62,10 +62,7 @@ class DepartmentViewSet(viewsets.ModelViewSet):
         department = self.get_object()
         department.is_active = False
         department.save(update_fields=["is_active"])
-        return Response(
-            {"detail": f"Department '{department.name}' deactivated."},
-            status=status.HTTP_200_OK,
-        )
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @extend_schema(request=JoinQueueSerializer, responses={201: TicketSerializer})
     @action(detail=True, methods=["post"], permission_classes=[IsStudent])
@@ -280,25 +277,11 @@ class _StaffTicketActionView(APIView):
     permission_classes = [IsStaffMember]
 
     def get_ticket(self, request, pk):
-        if request.user.department is None and getattr(request.user, "role", None) != "admin":
-            return None, Response(
-                {"detail": "Your account is not assigned to a department."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
         try:
             ticket = Ticket.objects.select_related("queue__department").get(pk=pk)
         except Ticket.DoesNotExist:
             return None, Response(
                 {"detail": "Ticket not found."}, status=status.HTTP_404_NOT_FOUND
-            )
-        if (
-            getattr(request.user, "role", None) != "admin"
-            and request.user.department_id
-            and ticket.queue.department_id != request.user.department_id
-        ):
-            return None, Response(
-                {"detail": "This ticket belongs to another department."},
-                status=status.HTTP_403_FORBIDDEN,
             )
         return ticket, None
 
@@ -398,7 +381,7 @@ class QueueStatusView(APIView):
 class ReportSummaryView(APIView):
     """GET /api/reports/summary/?date=YYYY-MM-DD - per-department daily report."""
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdmin]
 
     @extend_schema(responses={200: dict})
     def get(self, request):
